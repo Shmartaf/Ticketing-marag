@@ -1,0 +1,42 @@
+repos:
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.1.0
+    hooks:
+      - id: detect-secrets
+        name: detect-secrets
+
+  - repo: local
+    hooks:
+      - id: run-tests
+        name: run-tests
+        entry: npm run test
+        language: system
+        files: 'tests/.*\.(js|jsx|ts|tsx)$'
+        always_run: true
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.4.0
+    hooks:
+      - id: check-yaml
+        name: check-yaml
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.4.0
+    hooks:
+      - id: check-json
+        name: check-json
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: "v4.0.0-alpha.8"
+    hooks:
+      - id: prettier
+        name: prettier
+
+  - repo: https://github.com/okonet/lint-staged
+    rev: v11.0.0 # Use the latest version
+    hooks:
+      - id: lint-staged
+        stages: [commit]
+        additional_dependencies: [eslint]
+        files: \.js$
+        entry: npx lint-staged
