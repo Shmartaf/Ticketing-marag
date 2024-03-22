@@ -49,6 +49,25 @@ class Controller {
         return await this.db.deleteTeam(id);
     }
 
+    async getAccountById(id) {
+        return await this.db.getAccountById(id);
+    }
+
+    async getAccounts() {
+        return await this.db.getAllAccounts();
+    }
+
+    async createAccount(account) {
+        return await this.db.createAccount(account);
+    }
+
+    async updateAccount(id, account) {
+        return await this.db.updateAccount(id, account);
+    }
+
+    async deleteAccount(id) {
+        return await this.db.deleteAccount(id);
+    }
 
 }
 

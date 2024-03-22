@@ -5,6 +5,7 @@ require('dotenv').config({ path: 'backend/.env' });
 // Routes
 const boardRouter = require('./router/boards');
 const teamRouter = require('./router/Teams');
+const accountRouter = require('./router/Accounts');
 // const incidentRouter = require('./router/incidentRouter');
 
 const app = express();
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
 
 app.use('/boards', boardRouter);
 app.use('/teams', teamRouter);
+app.use('/accounts', accountRouter);
 // app.use('/incidents', incidentRouter);
 
 // Start the server

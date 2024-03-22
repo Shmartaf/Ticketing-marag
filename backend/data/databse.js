@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { board, Teams } = require('./models');
+const { board, Teams, account } = require('./models');
 require('dotenv').config({ path: 'backend/.env' });
 
 
@@ -7,7 +7,8 @@ class DBHandler {
     constructor() {
         this.schema = {
             board: board,
-            Teams: Teams
+            Teams: Teams,
+            account: account
 
         };
         this.url = this.constructConnectionString();
@@ -84,6 +85,34 @@ class DBHandler {
         const boards = await this.schema.board.find({ team: team });
         return boards;
     }
+
+    async getAccountById(id) {
+        const account = await this.schema.account.findById(id);
+        return account;
+    }
+    async createAccount(account) {
+        const newAccount = this.schema.account.create(account);
+        return newAccount;
+    }
+    async updateAccount(id, account) {
+        const updatedAccount = await this.schema.account
+            .findByIdAndUpdate(id, account
+            )
+        return updatedAccount;
+    }
+    async deleteAccount(id) {
+        const deletedAccount = await this.schema.account.findByIdAndDelete(id);
+        return deletedAccount;
+    }
+    async getAllAccounts() {
+        const accounts = await this.schema.account.find();
+        return accounts;
+    }
+    async getTeamsByAccount(account) {
+        const teams = await this.schema.account.find({ account: account });
+        return teams;
+    }
 }
+
 
 module.exports = DBHandler;
