@@ -26,6 +26,34 @@
   }
 
   .dashboard-viewer {
+    @apply p-10 w-full;
+  }
+
+  .dashboard-nav-menu {
+    @apply flex items-center gap-0;
+  }
+  .dashboard-nav-menu button {
+    @apply flex items-center;
+  }
+
+  .board-table th {
+    @apply table-cell py-1 font-medium text-center border-r first:px-1 px-5 last:px-3 last:border-0 last:w-full w-fit text-nowrap whitespace-nowrap;
+  }
+
+  .board-table {
+    @apply table w-full;
+  }
+
+  .board-header {
+    @apply table-row bg-gray-50/50 border-b;
+  }
+
+  .board-row {
+    @apply table-row font-medium text-center;
+  }
+
+  .board-row td {
+    @apply py-1 border-r first:px-1 px-5 last:border-0;
     @apply p-10;
   }
 }
@@ -86,21 +114,24 @@ h1 {
 button {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 0.5em 1.1em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  /* background-color: #1a1a1a; */
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.2s ease-in-out;
 }
 /* button:hover {
   border-color: #646cff;
 } */
+
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -110,7 +141,10 @@ button:focus-visible {
   /* a:hover {
     color: #747bff;
   } */
+
+
   button {
     background-color: #f9f9f9;
   }
+
 }

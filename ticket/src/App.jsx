@@ -13,6 +13,9 @@ import { Route, Routes, BrowserRouter, Outlet } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import DashboardLayout from "./components/Dashboard/DashboardLayout";
 import DashboardIndex from "./pages/dashboardIndex";
+import Login from "./pages/login";
+import Register from "./pages/register";
+
 
 const onCreateBoard = (schema) => {
   console.log(schema);
@@ -37,6 +40,9 @@ function App() {
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardIndex />} />
         </Route>
+
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </BrowserRouter>
   );
