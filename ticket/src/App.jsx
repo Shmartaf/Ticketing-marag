@@ -16,6 +16,7 @@ import DashboardIndex from "./pages/dashboardIndex";
 import Login from "./pages/login";
 import Register from "./pages/register";
 
+
 const onCreateBoard = (schema) => {
   console.log(schema);
   fetch("http://localhost:5005/boards", {

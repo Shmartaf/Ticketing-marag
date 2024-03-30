@@ -25,7 +25,11 @@ export default function Sidebar() {
   ]);
 
   return (
+
     <div className="bg-slate-50/40 min-w-[280px] h-screen border-r shadow-sm">
+
+    <div className="bg-slate-50/40 h-screen border-r shadow-sm">
+
       <div className="sidebar-wrap">
         <div className="flex items-center justify-between px-2.5 mb-3">
           <div className="flex items-center gap-2">
