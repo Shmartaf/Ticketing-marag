@@ -54,7 +54,6 @@
 
   .board-row td {
     @apply py-1 border-r first:px-1 px-5 last:border-0;
-    @apply p-10;
   }
 }
 
@@ -126,13 +125,6 @@ button {
   border-color: #646cff;
 } */
 
-
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -141,10 +133,4 @@ button:focus-visible {
   /* a:hover {
     color: #747bff;
   } */
-
-
-  button {
-    background-color: #f9f9f9;
-  }
-
 }
