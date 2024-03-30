@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Divider } from "@mui/material";
 import Board from "../components/Dashboard/Board";
 import { useParams } from "react-router-dom";
+import DynamicBoard from "../components/Dashboard/DynamicBoard";
 
 const board = {
   color: "#F59E0B",
@@ -16,14 +17,29 @@ const board = {
 };
 
 export default function BoardPage() {
-  const [boardData, setBoardData] = useState(board);
+  const [boardData, setBoardData] = useState<any>([]);
 
   let { id } = useParams(); // Use this to query results based on board's id
+
+  async function getBoard() {
+    const res = await fetch(`http://localhost:5005/boards/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    setBoardData(await res.json());
+  }
+
+  useEffect(() => {
+    getBoard();
+  }, []);
 
   return (
     <div className="dashboard-viewer">
       <h3 className="text-[32px] leading-10 font-semibold tracking-[-0.01em] flex items-center gap-4">
-        {boardData.name}
+        {boardData.board_name}
       </h3>
       <h6 className="text-[17px] font-medium text-gray-500 tracking-[-0.01em]">
         Add board&apos;s short description...
@@ -32,7 +48,7 @@ export default function BoardPage() {
       <Divider sx={{ m: "20px 0" }} />
 
       <div>
-        <Board
+        <DynamicBoard
           hideTitle
           board={boardData}
           onAddColumn={() => {
@@ -43,7 +59,7 @@ export default function BoardPage() {
                 type: "text",
               });
 
-              updatedBoard.rowsData.forEach((row) => {
+              updatedBoard.incidents.forEach((row) => {
                 row.push("");
               });
 
@@ -55,7 +71,7 @@ export default function BoardPage() {
               const updatedBoard = { ...prev };
               updatedBoard.columns.splice(index, 1);
 
-              updatedBoard.rowsData.forEach((row) => {
+              updatedBoard.incidents.forEach((row) => {
                 row.splice(index, 1);
               });
 
@@ -67,7 +83,7 @@ export default function BoardPage() {
               const updatedBoard = { ...prev };
               const newEmptyRow = updatedBoard.columns.map(() => null);
 
-              updatedBoard.rowsData.push(newEmptyRow);
+              updatedBoard.incidents.push(newEmptyRow);
 
               return updatedBoard;
             });

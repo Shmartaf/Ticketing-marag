@@ -162,3 +162,12 @@ button {
   font-size: 15px;
   letter-spacing: -0.005em;
 }
+
+.css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root {
+  font-size: 15px;
+  font-family: "Figtree" !important;
+}
+
+.css-154xyx0-MuiInputBase-root-MuiOutlinedInput-root {
+  border-radius: 8px !important;
+}

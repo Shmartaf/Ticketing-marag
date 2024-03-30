@@ -1,28 +1,28 @@
 import React, { useState } from "react";
 
 export default function Sidebar() {
-  const [boards, setBoards] = useState([
-    {
-      name: "Board One",
-      color: "text-blue-500",
-    },
-    {
-      name: "Board Two",
-      color: "text-orange-400",
-    },
-    {
-      name: "Board Three",
-      color: "text-purple-500",
-    },
-    {
-      name: "Board Four",
-      color: "text-teal-500",
-    },
-    {
-      name: "Board Five",
-      color: "text-red-500",
-    },
-  ]);
+  // const [boards, setBoards] = useState([
+  //   {
+  //     name: "Board One",
+  //     color: "text-blue-500",
+  //   },
+  //   {
+  //     name: "Board Two",
+  //     color: "text-orange-400",
+  //   },
+  //   {
+  //     name: "Board Three",
+  //     color: "text-purple-500",
+  //   },
+  //   {
+  //     name: "Board Four",
+  //     color: "text-teal-500",
+  //   },
+  //   {
+  //     name: "Board Five",
+  //     color: "text-red-500",
+  //   },
+  // ]);
 
   return (
     <div className="bg-slate-50/40 min-w-[280px] h-screen border-r shadow-sm sticky top-0 left-0 bottom-0">
@@ -128,7 +128,7 @@ export default function Sidebar() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-2.5 mt-3">
+        {/* <div className="grid grid-cols-1 gap-2.5 mt-3">
           {boards.map((board, i) => (
             <a
               key={i}
@@ -150,7 +150,7 @@ export default function Sidebar() {
               {board.name}
             </a>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );
