@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 
-import { Avatar, Divider, MenuItem, Select, styled } from "@mui/material";
+import {
+  Autocomplete,
+  Avatar,
+  Divider,
+  MenuItem,
+  Select,
+  TextField,
+  styled,
+} from "@mui/material";
 import StyledDialog from "../assets/StyledDialog";
 import InputBase from "@mui/material/InputBase";
 
@@ -22,6 +30,24 @@ const demoNotifications = [
   },
 ];
 
+const demoTeam = [
+  {
+    name: "Member Name",
+    isYou: false,
+    role: "Super Admin",
+  },
+  {
+    name: "Member Name",
+    isYou: true,
+    role: "Team Member",
+  },
+  {
+    name: "Member Name",
+    isYou: false,
+    role: "Team Admin",
+  },
+];
+
 export default function NotificationsPage() {
   return (
     <div className="dashboard-viewer">
@@ -35,24 +61,62 @@ export default function NotificationsPage() {
             Inbox (23)
           </h5>
 
-          {/* Add visibility condition */}
-          <button className="border border-gray-200 rounded-lg transition-all duration-200 hover:shadow-md hover:text-blue-500 hover:shadow-black/[0.05] active:scale-[0.975] shadow-sm flex items-center gap-1.5 py-1.5 px-3 text-[14.5px]">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.8}
-              stroke="currentColor"
-              className="w-4 -ml-0.5 -translate-y-[0.5]"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
-              />
-            </svg>
-            Send Message
-          </button>
+          <StyledDialog
+            onClose={() => {}}
+            button={
+              <button className="border border-gray-200 rounded-lg transition-all duration-200 hover:shadow-md hover:text-blue-500 hover:shadow-black/[0.05] active:scale-[0.975] shadow-sm flex items-center gap-1.5 py-1.5 px-3 text-[14.5px]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.8}
+                  stroke="currentColor"
+                  className="w-4 -ml-0.5 -translate-y-[0.5]"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+                  />
+                </svg>
+                Send Message
+              </button>
+            }
+            model={
+              <div className="mt-4 mb-4 w-full">
+                <div className="">
+                  <textarea
+                    placeholder="Message"
+                    rows={3}
+                    className="border mt-1.5 border-gray-300 text-[15px] px-3.5 py-2 rounded-lg shadow-sm w-full"
+                  />
+
+                  <Autocomplete
+                    multiple
+                    className="mt-2 shadow-sm"
+                    id="tags-outlined"
+                    options={demoTeam}
+                    getOptionLabel={(member) => member.name}
+                    defaultValue={[]}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Select Recipient"
+                        placeholder="Recipient"
+                      />
+                    )}
+                  />
+                </div>
+              </div>
+            }
+            title={"Send Message"}
+            closeTrigger={
+              <button className="text-white font-medium py-[7px] mt-1 bg-gradient-to-t from-[#467ae9] to-blue-500 border border-black/10 text-[15px]">
+                Send Message
+              </button>
+            }
+          />
         </div>
 
         <div className="mt-3 border rounded-xl shadow-sm bg-white overflow-hidden">

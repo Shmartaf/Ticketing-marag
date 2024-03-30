@@ -17,7 +17,7 @@ export default function Register() {
           Already have an account?{" "}
           <a
             className="text-blue-500 transition-all hover:text-indigo-500 duration-200"
-            href="/login"
+            href="/"
           >
             Login
           </a>
@@ -56,7 +56,10 @@ export default function Register() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button className="w-full text-white font-semibold py-2 mt-4 bg-gradient-to-t from-blue-600 to-blue-500 border border-black/10">
+          <button
+            type="submit"
+            className="w-full text-white font-semibold py-2 mt-4 bg-gradient-to-t from-blue-600 to-blue-500 border border-black/10"
+          >
             Register
           </button>
         </form>

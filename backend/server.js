@@ -1,11 +1,12 @@
-const express = require('express');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
 
+require("dotenv").config();
 
 // Routes
-const boardRouter = require('./router/boards');
-const teamRouter = require('./router/Teams');
-const accountRouter = require('./router/Accounts');
+const boardRouter = require("./router/boards");
+const teamRouter = require("./router/Teams");
+const accountRouter = require("./router/Accounts");
 // const incidentRouter = require('./router/incidentRouter');
 
 const app = express();
@@ -13,18 +14,18 @@ const PORT = process.env.PORT || 8080;
 
 // Middleware
 app.use(express.json());
+app.use(cors()); // Add this line to enable CORS
 
-app.get('/', (req, res) => {
-    res.send('Hello World!');
+app.get("/", (req, res) => {
+  res.send("Hello World!");
 });
 
-
-app.use('/boards', boardRouter);
-app.use('/teams', teamRouter);
-app.use('/accounts', accountRouter);
+app.use("/boards", boardRouter);
+app.use("/teams", teamRouter);
+app.use("/accounts", accountRouter);
 // app.use('/incidents', incidentRouter);
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });

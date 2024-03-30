@@ -19,22 +19,24 @@ import BoardPage from "./pages/board";
 import SettingsPage from "./pages/settings";
 import NotificationsPage from "./pages/notifications";
 
-const onCreateBoard = (schema) => {
-  console.log(schema);
-  fetch("http://localhost:5005/boards", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(schema),
-  })
-    .then((response) => response.json())
-    .then((data) => console.log(data))
-    .catch((error) => console.log(error));
-};
+// const onCreateBoard = (schema) => {
+//   console.log(schema);
+//   fetch("http://localhost:5005/boards", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(schema),
+//   })
+//     .then((response) => response.json())
+//     .then((data) => console.log(data))
+//     .catch((error) => console.log(error));
+// };
 
 function App() {
   const [count, setCount] = useState(0);
+
+  // onCreateBoard();
 
   return (
     <BrowserRouter>
@@ -46,7 +48,7 @@ function App() {
           <Route path="notifications" element={<NotificationsPage />} />
         </Route>
 
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
     </BrowserRouter>

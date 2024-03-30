@@ -3,41 +3,97 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Divider } from "@mui/material";
 import StyledTooltip from "../assets/StyledTooltip";
 import Board from "../components/Dashboard/Board";
-
-const boards = [
-  {
-    color: "#F59E0B",
-    columns: [
-      { name: "Column One", type: "text" },
-      { name: "Column Two", type: "text" },
-    ],
-    rows: [
-      { complete: true, data: ["Value One", "Value Two"] },
-      { complete: false, data: ["Value One", "Value Two"] },
-    ],
-
-    name: "Board Two",
-  },
-  {
-    color: "#3B82F6",
-    columns: [
-      { name: "Column One", type: "text" },
-      { name: "Column Two", type: "text" },
-    ],
-    rows: [
-      { complete: false, data: ["Value One", null] },
-      { complete: false, data: ["Value One", "Value Two"] },
-    ],
-
-    name: "Board One",
-  },
-];
+import DynamicBoard from "../components/Dashboard/DynamicBoard";
 
 export default function DashboardIndex() {
-  const [boardsData, setBoardsData] = useState(boards);
+  const [boardsData, setBoardsData] = useState<any>([]);
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(0);
+
+  const filteredBoards = boardsData
+
+    .filter((board) => {
+      const boardName = board.board_name.toLowerCase();
+      const searchQuery = search.toLowerCase();
+      return boardName.includes(searchQuery);
+    })
+
+    .sort((a, b) => {
+      if (sort === 1) {
+        return a.board_name.localeCompare(b.board_name);
+      } else {
+        return b.board_name.localeCompare(a.board_name);
+      }
+    });
+
+  async function getBoards() {
+    const res = await fetch("http://localhost:5005/boards", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    setBoardsData(await res.json());
+  }
+
+  async function createBoard() {
+    const newBoard = {
+      username: "admin", //
+      board_name: "test board create 2",
+      users: [],
+      team: "65fd90dcc254096623474ecc", //
+      incidents: [
+        {
+          complete: true,
+          data: [null],
+        },
+      ],
+      __v: 0,
+      color: "#3B82F6",
+      columns: [
+        {
+          name: "New Column",
+          type: "text",
+        },
+      ],
+    };
+
+    const res = await fetch("http://localhost:5005/boards", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newBoard),
+    });
+
+    setBoardsData([...boardsData, newBoard]);
+  }
+
+  async function updateBoards(index) {
+    console.log(index);
+    const res = await fetch(
+      `http://localhost:5005/boards/${boardsData[index]._id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(boardsData),
+      }
+    );
+
+    console.log(res);
+  }
+
+  useEffect(() => {
+    getBoards();
+  }, []);
+
+  // useEffect(() => {
+  //   updateBoards();
+  // }, [boardsData]);
 
   return (
     <div className="dashboard-viewer overflow-hidden overscroll-none">
@@ -60,16 +116,7 @@ export default function DashboardIndex() {
       <div className="dashboard-nav-menu">
         <button
           onClick={() => {
-            setBoardsData([
-              ...boardsData,
-              {
-                color: "#3B82F6",
-                columns: [{ name: "Column One", type: "text" }],
-                rows: [{ complete: false, data: ["Value One"] }],
-
-                name: "New Board",
-              },
-            ]);
+            createBoard();
           }}
           className="bg-gradient-to-t from-blue-600 to-blue-500 text-white gap-1.5 font-[550] mr-5 group"
         >
@@ -98,12 +145,12 @@ export default function DashboardIndex() {
       </div>
 
       <div className="mt-14 grid grid-cols-1 gap-14">
-        {boardsData.map((board, i) => (
-          <Board
+        {filteredBoards.map((board, i) => (
+          <DynamicBoard
             onDelete={() => {
-              setBoardsData((prevBoards) => {
-                return prevBoards.filter((_, index) => index !== i);
-              });
+              // setBoardsDemo((prevBoards) => {
+              //   return prevBoards.filter((_, index) => index !== i);
+              // });
             }}
             board={board}
             key={i}
@@ -117,7 +164,7 @@ export default function DashboardIndex() {
                   type: "text",
                 });
 
-                updatedBoard.rows.forEach((row) => {
+                updatedBoard.incidents.forEach((row) => {
                   row.data.push("");
                 });
 
@@ -125,6 +172,8 @@ export default function DashboardIndex() {
 
                 return updatedBoards;
               });
+
+              updateBoards(i);
             }}
             onColumnRemove={(index) => {
               setBoardsData((prev) => {
@@ -133,7 +182,7 @@ export default function DashboardIndex() {
 
                 updatedBoard.columns.splice(index, 1);
 
-                updatedBoard.rows.forEach((row) => {
+                updatedBoard.incidents.forEach((row) => {
                   row.data.splice(index, 1);
                 });
 
@@ -141,6 +190,8 @@ export default function DashboardIndex() {
 
                 return updatedBoards;
               });
+
+              updateBoards(i);
             }}
             onAddRow={() => {
               setBoardsData((prev) => {
@@ -149,21 +200,33 @@ export default function DashboardIndex() {
 
                 const newEmptyRow = updatedBoard.columns.map(() => null);
 
-                updatedBoard.rows.push({ complete: false, data: newEmptyRow });
+                updatedBoard.incidents.push({
+                  complete: false,
+                  data: newEmptyRow,
+                });
                 updatedBoards[i] = updatedBoard;
 
                 return updatedBoards;
               });
+
+              updateBoards(i);
             }}
             onUpdate={(update) => {
               setBoardsData((prev) => {
                 const newData = [...prev];
+                //@ts-ignore
                 newData[i] = { ...update };
                 return newData;
               });
+
+              updateBoards(i);
             }}
           />
         ))}
+
+        {filteredBoards.length == 0 && (
+          <div className="text-xl">No boards found.</div>
+        )}
       </div>
     </div>
   );
