@@ -25,7 +25,7 @@ export default function Sidebar() {
   ]);
 
   return (
-    <div className="bg-slate-50/40 min-w-[280px] h-screen border-r shadow-sm">
+    <div className="bg-slate-50/40 min-w-[280px] h-screen border-r shadow-sm sticky top-0 left-0 bottom-0">
       <div className="sidebar-wrap">
         <div className="flex items-center justify-between px-2.5 mb-3">
           <div className="flex items-center gap-2">
@@ -41,7 +41,7 @@ export default function Sidebar() {
             </div>
           </div>
         </div>
-        <a href="#" className="sidebar-button">
+        <a href="/dashboard" className="sidebar-button">
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -64,7 +64,7 @@ export default function Sidebar() {
           Home
         </a>
 
-        <a href="#" className="sidebar-button">
+        <a href="/dashboard/notifications" className="sidebar-button">
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -89,7 +89,7 @@ export default function Sidebar() {
           Notifications
         </a>
 
-        <a href="#" className="sidebar-button">
+        <a href="/dashboard/settings" className="sidebar-button">
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -139,6 +139,7 @@ export default function Sidebar() {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
+                className="translate-y-[1px]"
               >
                 <path
                   fillRule="evenodd"

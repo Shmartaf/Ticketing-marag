@@ -15,6 +15,9 @@ import DashboardLayout from "./components/Dashboard/DashboardLayout";
 import DashboardIndex from "./pages/dashboardIndex";
 import Login from "./pages/login";
 import Register from "./pages/register";
+import BoardPage from "./pages/board";
+import SettingsPage from "./pages/settings";
+import NotificationsPage from "./pages/notifications";
 
 const onCreateBoard = (schema) => {
   console.log(schema);
@@ -38,6 +41,9 @@ function App() {
       <Routes>
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardIndex />} />
+          <Route path="board/:id" element={<BoardPage />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="notifications" element={<NotificationsPage />} />
         </Route>
 
         <Route path="/login" element={<Login />} />
