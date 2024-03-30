@@ -1,5 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .divider {
+    @apply h-0 border-b w-full;
+  }
+
+  .sidebar-wrap {
+    @apply grid grid-cols-1 gap-2.5 p-5;
+  }
+
+  .sidebar-button {
+    @apply px-2.5 py-1.5 rounded-lg transition-all duration-200 hover:bg-blue-500/10 flex font-medium items-center gap-2 text-black font-fig;
+  }
+  .sidebar-button svg {
+    @apply w-5 h-5 mb-0.5;
+  }
+
+  .sidebar-board-button {
+    @apply px-2.5 py-1.5 rounded-lg transition-all duration-200 flex items-center gap-1.5 font-semibold font-fig;
+  }
+  .sidebar-board-button svg {
+    @apply w-4 scale-x-90 mb-0.5;
+  }
+
+  .dashboard-viewer {
+    @apply p-10 w-full;
+  }
+
+  .dashboard-nav-menu {
+    @apply flex items-center gap-0;
+  }
+  .dashboard-nav-menu button {
+    @apply flex items-center;
+  }
+
+  .board-table th {
+    @apply table-cell py-1 font-medium text-center border-r first:px-1 px-5 last:px-3 last:border-0 last:w-full w-fit text-nowrap whitespace-nowrap;
+  }
+
+  .board-table {
+    @apply table w-full;
+  }
+
+  .board-header {
+    @apply table-row bg-gray-50/50 border-b;
+  }
+
+  .board-row {
+    @apply table-row font-medium text-center;
+  }
+
+  .board-row td {
+    @apply py-1 border-r first:px-1 px-5 last:border-0;
+  }
+}
+
+@font-face {
+  font-family: "Switzer";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../public/fonts/Switzer.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Figtree";
+  font-style: normal;
+  font-weight: 300 900;
+  font-display: swap;
+  src: url("../public/fonts/Figtree.woff2") format("woff2");
+}
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Figtree, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -13,14 +88,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
+/* a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
 }
 a:hover {
   color: #535bf2;
-}
+} */
 
 body {
   margin: 0;
@@ -38,31 +113,24 @@ h1 {
 button {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 0.5em 1.1em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  /* background-color: #1a1a1a; */
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.2s ease-in-out;
 }
-button:hover {
+/* button:hover {
   border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
+} */
 
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
   }
-  a:hover {
+  /* a:hover {
     color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+  } */
 }

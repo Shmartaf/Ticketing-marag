@@ -1,5 +1,5 @@
 const express = require('express');
-require('dotenv').config({ path: 'backend/.env' });
+require('dotenv').config();
 
 
 // Routes

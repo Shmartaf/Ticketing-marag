@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { board, Teams, account } = require('./models');
-require('dotenv').config({ path: 'backend/.env' });
+require('dotenv').config();
 
 
 class DBHandler {
