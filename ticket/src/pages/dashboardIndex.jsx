@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState } from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Divider } from "@mui/material";
@@ -6,7 +7,7 @@ import Board from "../components/Dashboard/Board";
 import DynamicBoard from "../components/Dashboard/DynamicBoard";
 
 export default function DashboardIndex() {
-  const [boardsData, setBoardsData] = useState<any>([]);
+  const [boardsData, setBoardsData] = useState([]);
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(0);
@@ -234,12 +235,12 @@ export default function DashboardIndex() {
 
 const Search = ({ current, onChange }) => {
   const [open, setOpen] = useState(false);
-  const modalRef = useRef<HTMLUListElement>(null);
+  const modalRef = useRef(null);
 
   useEffect(() => {
     if (open !== false) {
-      const handleClickOutside = (event: MouseEvent) => {
-        if (!modalRef.current?.contains(event.target as Node)) setOpen(false);
+      const handleClickOutside = (event) => {
+        if (!modalRef.current?.contains(event.target)) setOpen(false);
       };
 
       setTimeout(() => {
@@ -291,12 +292,12 @@ const Search = ({ current, onChange }) => {
 
 const Sort = ({ current, onChange }) => {
   const [open, setOpen] = useState(false);
-  const modalRef = useRef<HTMLUListElement>(null);
+  const modalRef = useRef(null);
 
   useEffect(() => {
     if (open !== false) {
-      const handleClickOutside = (event: MouseEvent) => {
-        if (!modalRef.current?.contains(event.target as Node)) setOpen(false);
+      const handleClickOutside = (event) => {
+        if (!modalRef.current?.contains(event.target)) setOpen(false);
       };
 
       setTimeout(() => {
