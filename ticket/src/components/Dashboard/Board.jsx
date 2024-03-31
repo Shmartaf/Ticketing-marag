@@ -7,7 +7,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import StyledDialog from "../../assets/StyledDialog";
 import InputBase from "@mui/material/InputBase";
 
-export default function DynamicBoard({
+export default function Board({
   board,
   hideTitle,
   onUpdate,
@@ -15,16 +15,8 @@ export default function DynamicBoard({
   onAddColumn,
   onAddRow,
   onDelete,
-}: {
-  board: any;
-  hideTitle?: boolean;
-  onUpdate: (updateBoard: any) => void;
-  onColumnRemove: (index: number) => void;
-  onAddColumn: () => void;
-  onAddRow: () => void;
-  onDelete?: () => void;
 }) {
-  const [selected, setSelected] = useState<number[]>([]);
+  const [selected, setSelected] = useState([]);
 
   return (
     <div className="">
@@ -46,7 +38,7 @@ export default function DynamicBoard({
             />
           </svg> */}
 
-          <h3 className="font-semibold text-2xl">{board.board_name}</h3>
+          <h3 className="font-semibold text-2xl">{board.name}</h3>
         </div>
 
         <div className="flex items-center gap-2 relative">
@@ -158,7 +150,7 @@ export default function DynamicBoard({
             </thead>
 
             <tbody>
-              {board.incidents.map((row, i) => (
+              {board.rows.map((row, i) => (
                 <tr key={i} className="board-row border-t">
                   <td>
                     <StyledCheckbox
@@ -177,7 +169,7 @@ export default function DynamicBoard({
                       <input
                         onChange={(e) => {
                           const updatedBoard = { ...board };
-                          updatedBoard.incidents[i].data[ic] = e.target.value;
+                          updatedBoard.rows[i].data[ic] = e.target.value;
                           onUpdate(updatedBoard);
                         }}
                         value={col}
@@ -228,20 +220,14 @@ export default function DynamicBoard({
   );
 }
 
-const ColumnDropdown = ({
-  onRemove,
-  onChange,
-}: {
-  onRemove: () => void;
-  onChange: (newName) => void;
-}) => {
+const ColumnDropdown = (onRemove, onChange) => {
   const [open, setOpen] = useState(false);
-  const modalRef = useRef<HTMLUListElement>(null);
+  const modalRef = useRef < HTMLUListElement > null;
 
   useEffect(() => {
     if (open !== false) {
-      const handleClickOutside = (event: MouseEvent) => {
-        if (!modalRef.current?.contains(event.target as Node)) setOpen(false);
+      const handleClickOutside = (event) => {
+        if (!modalRef.current?.contains(event.target)) setOpen(false);
       };
 
       setTimeout(() => {
@@ -348,24 +334,16 @@ const ColumnDropdown = ({
   );
 };
 
-const BoardDropdown = ({
-  onRemove,
-  onNameChange,
-  onColorChange,
-}: {
-  onRemove: () => void;
-  onNameChange: (newName) => void;
-  onColorChange: (newColor) => void;
-}) => {
+const BoardDropdown = ({ onRemove, onNameChange, onColorChange }) => {
   const [open, setOpen] = useState(false);
-  const modalRef = useRef<HTMLUListElement>(null);
+  const modalRef = useRef < HTMLUListElement > null;
 
   const [color, setColor] = useState("#3B82F6");
 
   useEffect(() => {
     if (open !== false) {
-      const handleClickOutside = (event: MouseEvent) => {
-        if (!modalRef.current?.contains(event.target as Node)) setOpen(false);
+      const handleClickOutside = (event) => {
+        if (!modalRef.current?.contains(event.target)) setOpen(false);
       };
 
       setTimeout(() => {
@@ -398,7 +376,7 @@ const BoardDropdown = ({
             onRemove();
             setOpen(false);
           }}
-          className="flex items-center gap-1 text-[15px] font-medium cursor-pointer hover:text-red-500 transition-all duration-200"
+          className="flex items-center gap-1 text-[15px] cursor-pointer hover:text-red-500 transition-all duration-200"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
