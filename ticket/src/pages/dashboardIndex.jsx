@@ -41,6 +41,7 @@ export default function DashboardIndex() {
 
   async function createBoard() {
     const newBoard = {
+      account_id : "65fda85762fb9b8527c7e4bf",
       username: "admin", //
       board_name: "test board create 2",
       users: [],
@@ -68,6 +69,7 @@ export default function DashboardIndex() {
       },
       body: JSON.stringify(newBoard),
     });
+
 
     setBoardsData([...boardsData, newBoard]);
   }

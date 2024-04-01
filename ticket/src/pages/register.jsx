@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {createSupabaseClient} from '../lib/supabaseClient'
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -6,6 +7,23 @@ export default function Register() {
   const [password, setPassword] = useState("");
 
   const [viewPassword, setViewPassword] = useState(false);
+
+  const supabase = createSupabaseClient();
+  console.log(supabase);
+
+  const SignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const { user, session, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    alert("Check your email for the confirmation link");
+  }
+
 
   return (
     <div className="bg-slate-100 flex items-center justify-center w-screen h-screen">
@@ -23,7 +41,9 @@ export default function Register() {
           </a>
         </p>
 
-        <form className="mt-4">
+        <form className="mt-4"
+          onSubmit={SignUp}
+        >
           <label htmlFor="name">
             Full Name <span className="text-red-500">*</span>
           </label>
@@ -59,6 +79,7 @@ export default function Register() {
           <button
             type="submit"
             className="w-full text-white font-semibold py-2 mt-4 bg-gradient-to-t from-blue-600 to-blue-500 border border-black/10"
+          
           >
             Register
           </button>

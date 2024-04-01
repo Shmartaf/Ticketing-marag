@@ -22,7 +22,7 @@ export default function Login() {
         </p>
 
         <form className="mt-4">
-          <label htmlFor="email">
+          <label htmlFor="email" className="text-gray-500">
             Email <span className="text-red-500">*</span>
           </label>
           <input
@@ -32,7 +32,7 @@ export default function Login() {
             className="border-[1.5px] mt-1.5 mb-4 border-gray-300 text-[17px] px-3.5 py-2 rounded-xl shadow-sm w-full"
             onChange={(e) => setEmail(e.target.value)}
           />
-          <label htmlFor="password">
+          <label htmlFor="password" className="text-gray-500">
             Password <span className="text-red-500">*</span>
           </label>
           <input
