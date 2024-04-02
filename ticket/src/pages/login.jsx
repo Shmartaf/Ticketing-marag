@@ -1,9 +1,25 @@
 import React, { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [viewPassword, setViewPassword] = useState(false);
+  const { login } = useAuth();
+  const Navigate = useNavigate();
+
+  const validate = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await login({ email, password });
+      console.log(res);
+      Navigate("/dashboard");
+
+    } catch (error) {
+      alert("Login failed: " + error.message);
+    }
+  }
 
   return (
     <div className="bg-slate-100 flex items-center justify-center w-screen h-screen">
@@ -21,7 +37,7 @@ export default function Login() {
           </a>
         </p>
 
-        <form className="mt-4">
+        <form className="mt-4" onSubmit={validate}>
           <label htmlFor="email" className="text-gray-500">
             Email <span className="text-red-500">*</span>
           </label>

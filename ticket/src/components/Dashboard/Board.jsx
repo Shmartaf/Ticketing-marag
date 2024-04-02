@@ -25,18 +25,7 @@ export default function Board({
           style={{ color: board.color }}
           className="flex items-center gap-1.5"
         >
-          {/* <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="w-4 scale-x-90"
-          >
-            <path
-              fillRule="evenodd"
-              d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
-              clipRule="evenodd"
-            />
-          </svg> */}
+
 
           <h3 className="font-semibold text-2xl">{board.name}</h3>
         </div>
@@ -249,11 +238,10 @@ const ColumnDropdown = (onRemove, onChange) => {
 
       <ul
         ref={modalRef}
-        className={`${
-          open
+        className={`${open
             ? `opacity-100 visible translate-y-0 scale-100`
             : `opacity-0 invisible scale-95 -translate-y-1`
-        } ul-modal absolute right-0 top-10 bg-white border rounded-xl origin-top-right flex items-center shadow-lg gap-2 px-2.5 py-1.5 transition-all duration-200`}
+          } ul-modal absolute right-0 top-10 bg-white border rounded-xl origin-top-right flex items-center shadow-lg gap-2 px-2.5 py-1.5 transition-all duration-200`}
       >
         <li
           onClick={() => {
@@ -282,7 +270,7 @@ const ColumnDropdown = (onRemove, onChange) => {
         <Divider orientation="vertical" flexItem />
 
         <StyledDialog
-          onClose={() => {}}
+          onClose={() => { }}
           button={
             <li className="flex items-center gap-1 text-sm cursor-pointer hover:text-blue-500 transition-all duration-200">
               <svg
@@ -365,11 +353,10 @@ const BoardDropdown = ({ onRemove, onNameChange, onColorChange }) => {
 
       <ul
         ref={modalRef}
-        className={`${
-          open
+        className={`${open
             ? `opacity-100 visible translate-y-0 scale-100`
             : `opacity-0 invisible scale-95 -translate-y-1`
-        } absolute right-0 top-12 bg-white border rounded-xl origin-top-right flex flex-col whitespace-nowrap shadow-lg gap-2 px-2.5 divide-y py-2.5 transition-all duration-200`}
+          } absolute right-0 top-12 bg-white border rounded-xl origin-top-right flex flex-col whitespace-nowrap shadow-lg gap-2 px-2.5 divide-y py-2.5 transition-all duration-200`}
       >
         <li
           onClick={() => {
@@ -398,7 +385,7 @@ const BoardDropdown = ({ onRemove, onNameChange, onColorChange }) => {
         <Divider orientation="vertical" flexItem />
 
         <StyledDialog
-          onClose={() => {}}
+          onClose={() => { }}
           button={
             <li className="flex items-center gap-1 text-[15px] cursor-pointer hover:text-blue-500 transition-all duration-200">
               <svg

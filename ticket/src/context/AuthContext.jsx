@@ -1,56 +1,43 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { createSupabaseClient } from "./lib/supabaseClient";
-import { BASE_URL } from "./api";
+import { createSupabaseClient } from "../lib/supabaseClient";
+// import { BASE_URL } from "./api";
 
-const findUser = async (user) => {
-  try {
-    // Ensure BASE_URL is correctly formatted without leading or trailing slashes if needed
-    const url = `${BASE_URL}/users/${user.id}`;
-    const response = await fetch(url);
-    console.log(`Response:`, response);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const data = await response.json(); // Correctly parse the JSON body
-    console.log(`Data:`, data);
-    if (data.userType === "babysitter") {
-      const response = await fetch(`${BASE_URL}/babysitters/${user.id}`);
-      const data = await response.json();
-      console.log(data);
-      return data;
-    }
-    if (data.userType === "parent") {
-      const response = await fetch(`${BASE_URL}/parents/${user.id}`);
-      const data = await response.json();
-      console.log(data);
-      return data;
-    }
-
-    return data; // Adjust this according to the actual structure of your data
-  } catch (error) {
-    console.error("Failed to find user:", error);
-    return null;
-  }
-};
-
-// Create an AuthContext
 export const AuthContext = createContext();
 
-// AuthProvider component
 export const AuthProvider = ({ children }) => {
-  const supabase = createSupabaseClient(); // Make sure to replace with your actual function
+  const supabase = createSupabaseClient();
   const initialAuthState = async () => {
     try {
       const {
         data: { user },
+        error,
       } = await supabase.auth.getUser();
       const session = supabase.auth.session();
       const isAuthenticated = !!user && !!session;
 
+      if (error) {
+        throw error;
+      }
+
+      let userData = {};
+
+      if (isAuthenticated) {
+        // Fetch additional user data
+        const { data: userDataFromSupabase, error: userError } = await supabase
+          .from("users")
+          .select("phone", "role")
+          .eq("id", user.id)
+          .single();
+
+        if (userError) {
+          throw userError;
+        }
+
+        userData = userDataFromSupabase;
+      }
+
       return {
-        user: isAuthenticated ? user : null,
+        user: isAuthenticated ? { ...user, ...userData } : null,
         session: isAuthenticated ? session : null,
         loading: false,
         isAuthenticated,
@@ -77,45 +64,45 @@ export const AuthProvider = ({ children }) => {
 
   const init = async () => {
     if (!isPageLoaded) {
-      // Set a flag to indicate that the page is loaded
       setIsPageLoaded(true);
 
-      // Perform the initial authentication check only when the page is loaded
       const initialState = await initialAuthState();
       setAuthState(initialState);
 
-      // Redirect to login if not authenticated
       if (!initialState.isAuthenticated) {
-        window.location.href = "/login"; // Adjust the path according to your routes
-      }
-    }
-  };
-  // init();
-
-  useEffect(() => {
-    // init();
-    if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/signup')) {
-      if (!authState.isAuthenticated) {
         window.location.href = "/login";
       }
     }
-    setTimeout(() => {
-      findUser(authState.user);
-    }
-      , 1000);
-  });
+  };
 
-  const signUp = async ({ email, password }) => {
+  useEffect(() => {
+    // init();
+  }, []);
+
+  const signUp = async ({ email, password, data }) => {
     try {
-      const { user, error } = await supabase.auth.signUp({ email, password });
+      const res = await supabase.auth.signUp({ email, password });
+      console.log(res);
+      const resiv = await supabase.auth.updateUser({
+        id: res.data.user.id,
+        data: data,
+      });
+      console.log(resiv);
+      // const { data } = await supabase.auth.updateUser({
+      //   id: user.id,
+      //   data,
 
-      if (error) {
+      // })
+      // if (updateUserError) {
+      //   throw updateUserError;
+      // }
+      if (res.error) {
         throw error;
       }
 
       setAuthState((prevState) => ({
         ...prevState,
-        user,
+        user: res.data.user,
       }));
     } catch (error) {
       console.error("Sign up failed", error);
@@ -125,28 +112,46 @@ export const AuthProvider = ({ children }) => {
 
   const login = async ({ email, password }) => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      console.log({
         email,
         password,
       });
-      const userData = await findUser(data.user);
-      console.log("userData:", userData);
-      data.user.userData = userData;
-
-      setAuthState({
-        user: data.user,
-        session: data.session,
-        loading: false,
-        isAuthenticated: true,
+      const { user, session, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
 
       if (error) {
         throw error;
       }
-      return data;
+
+      // if (user) {
+      //   // Fetch additional user data
+      //   const { data: userDataFromSupabase, error: userError } = await supabase
+      //     .from("users")
+      //     .select("phone", "role")
+      //     .eq("id", user.id)
+      //     .single();
+
+      //   if (userError) {
+      //     throw userError;
+      //   }
+
+      //   user.phone = userDataFromSupabase.phone;
+      //   user.role = userDataFromSupabase.role;
+      // }
+
+      setAuthState({
+        user,
+        session,
+        loading: false,
+        isAuthenticated: true,
+      });
+
+      return { user, session };
     } catch (error) {
       console.error("Login failed", error);
-      alert("Login failed" + error);
+      alert("Login failed:" + error);
       throw error;
     }
   };
@@ -173,7 +178,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// useAuth hook
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
