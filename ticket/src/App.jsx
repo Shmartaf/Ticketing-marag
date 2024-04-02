@@ -41,6 +41,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* <Route path="/board" element={<DynamicBoardForm />} /> */}
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardIndex />} />
           <Route path="board/:id" element={<BoardPage />} />
@@ -50,6 +51,8 @@ function App() {
 
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="*" element={<h1>Not Found</h1>} />
+        <Route path="login" element={<Login />} />
       </Routes>
     </BrowserRouter>
   );
