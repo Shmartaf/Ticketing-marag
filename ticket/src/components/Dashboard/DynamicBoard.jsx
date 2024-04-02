@@ -211,6 +211,7 @@ export default function DynamicBoard({
 
 const ColumnDropdown = ({ onRemove, onChange }) => {
   const [open, setOpen] = useState(false);
+  const [columnType, setColumnType] = useState("String"); // Default column type
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -287,7 +288,7 @@ const ColumnDropdown = ({ onRemove, onChange }) => {
                   d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
                 />
               </svg>
-              Rename
+              Edit
             </li>
           }
           model={
@@ -297,9 +298,20 @@ const ColumnDropdown = ({ onRemove, onChange }) => {
                 placeholder="Column's name"
                 className="border-[1.5px] mt-1.5 mb-4 border-gray-300 text-[17px] px-3.5 py-2 rounded-xl shadow-sm w-full"
               />
+              <Select
+                    value={columnType}
+                    onChange={(e) => setColumnType(e.target.value)}
+                    displayEmpty
+                    className="w-full mt-4"
+                  >
+                    <MenuItem value="String">String</MenuItem>
+                    <MenuItem value="Number">Number</MenuItem>
+                    <MenuItem value="Date">Date</MenuItem>
+                    <MenuItem value="Boolean">Boolean</MenuItem>
+                  </Select>
             </div>
           }
-          title={"Change Name"}
+          title={"Edit Column"}
           closeTrigger={
             <button
               onClick={(e) => {
@@ -313,7 +325,7 @@ const ColumnDropdown = ({ onRemove, onChange }) => {
               }}
               className="text-white font-medium py-[7px] mt-1 bg-gradient-to-t from-[#467ae9] to-blue-500 border border-black/10 text-[15px]"
             >
-              Update Name
+              Update
             </button>
           }
         />
