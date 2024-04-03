@@ -9,6 +9,7 @@ import DynamicBoard from "../components/Dashboard/DynamicBoard";
 import Search from "../components/Dashboard/DashboardIndex/Search";
 import Sort from "../components/Dashboard/DashboardIndex/Sort";
 import anitherBoard from '../anotherBoardFromDb.json';
+import { get, post, put, deleteRequest, BASE_URL } from "../api";
 // import DynamicBoard from "../components/Board/DynamicBoard";
 
 export default function DashboardIndex() {
@@ -34,14 +35,9 @@ export default function DashboardIndex() {
     });
 
   async function getBoards() {
-    const res = await fetch("http://localhost:5005/boards", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    setBoardsData(await res.json());
+    const res = await get("boards")
+    console.log(res);
+    setBoardsData(res);
   }
 
   async function createBoard() {

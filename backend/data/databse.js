@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { board, Teams, account } = require('./models');
+const { board, Teams, account, notification, messaging } = require('./models');
 require('dotenv').config();
 
 
@@ -8,7 +8,10 @@ class DBHandler {
         this.schema = {
             board: board,
             Teams: Teams,
-            account: account
+            account: account,
+            notification: notification,
+            messaging: messaging
+
 
         };
         this.url = this.constructConnectionString();
@@ -111,6 +114,77 @@ class DBHandler {
     async getTeamsByAccount(account) {
         const teams = await this.schema.account.find({ account: account });
         return teams;
+    }
+
+    async getNotifications() {
+        const notifications = await this.schema.notification.find();
+        return notifications;
+    }
+
+    async getNotificationById(id) {
+        const notification = await this.schema.notification.findById(id);
+        return notification;
+    }
+
+    async createNotification(notification) {
+        const newNotification = this.schema.notification.create(notification);
+        return newNotification;
+    }
+
+    async updateNotification(id, notification) {
+        const updatedNotification = await this.schema.notification
+            .findById
+    }
+
+    async deleteNotification(id) {
+        const deletedNotification = await this.schema.notification.findByIdAndDelete(id);
+        return deletedNotification;
+    }
+
+    async getMessages() {
+        const messages = await this.schema.messaging.find();
+        return messages;
+    }
+
+    async getMessageById(id) {
+        const message = await this.schema.messaging.findById(id);
+        return message;
+    }
+
+    async createMessage(message) {
+        const newMessage = this.schema.messaging.create(message);
+        return newMessage;
+    }
+
+    async updateMessage(id, message) {
+        const updatedMessage = await this.schema.messaging
+    }
+
+    async deleteMessage(id) {
+        const deletedMessage = await this.schema.messaging.findByIdAndDelete(id);
+        return deletedMessage;
+    }
+
+    async getMessagesByConversation(id) {
+        const messages = await this.schema.messaging.find({ conversation_id: id });
+        return messages;
+    }
+
+    async getNotificationsByReceiver(id) {
+        const notifications = await this.schema.notification.find({ receiver: id });
+        return notifications;
+    }
+
+    async getMessagesByReceiver(id) {
+        const messages = await this.schema.messaging.find({ receiver: id });
+        return messages;
+    }
+
+    async addUserToTeam(id, user) {
+        const team = await this.schema.Teams.findById(id);
+        team.users.push(user);
+        await team.save();
+        return team;
     }
 }
 
