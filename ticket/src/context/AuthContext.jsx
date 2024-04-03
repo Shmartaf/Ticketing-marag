@@ -79,6 +79,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // init();
+    localStorage.setItem("authState", JSON.stringify(authState));
     console.log(authState);
   }, []);
 

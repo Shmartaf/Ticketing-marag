@@ -10,6 +10,7 @@ import Search from "../components/Dashboard/DashboardIndex/Search";
 import Sort from "../components/Dashboard/DashboardIndex/Sort";
 import anitherBoard from '../anotherBoardFromDb.json';
 import { get, post, put, deleteRequest, BASE_URL } from "../api";
+import { useAuth } from "../context/AuthContext";
 // import DynamicBoard from "../components/Board/DynamicBoard";
 
 export default function DashboardIndex() {
@@ -17,7 +18,8 @@ export default function DashboardIndex() {
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(0);
-
+  const { user } = useAuth();
+  console.log(user);
   const filteredBoards = boardsData
 
     .filter((board) => {
@@ -45,7 +47,7 @@ export default function DashboardIndex() {
       account_id: "65fda85762fb9b8527c7e4bf",
       username: "admin", //
       board_name: "test board create 2",
-      users: [],
+      users: [user._id],
       team: "65fd90dcc254096623474ecc", //
       incidents: [
         {
@@ -62,6 +64,7 @@ export default function DashboardIndex() {
         },
       ],
     };
+    const res = await post("boards", newBoard);
     setBoardsData([...boardsData, newBoard]);
   }
 
@@ -79,6 +82,8 @@ export default function DashboardIndex() {
     );
 
     console.log(res);
+    const data = await put(`boards/${boardsData[index]._id}`, boardsData[index]);
+    console.log(data);
   }
 
   useEffect(() => {
