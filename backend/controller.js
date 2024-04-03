@@ -69,6 +69,47 @@ class Controller {
         return await this.db.deleteAccount(id);
     }
 
+    async getNotifications() {
+        return await this.db.getNotifications();
+    }
+
+    async getMessages() {
+        return await this.db.getMessages();
+    }
+
+    async createMessage(message) {
+        return await this.db.createMessage(message);
+    }
+
+    async createNotification(notification) {
+        return await this.db.createNotification(notification);
+    }
+
+    async deleteNotification(id) {
+        return await this.db.deleteNotification(id);
+    }
+
+    async deleteMessage(id) {
+        return await this.db.deleteMessage(id);
+    }
+
+    async getMessagesByConversation(id) {
+        return await this.db.getMessagesByConversation(id);
+    }
+
+    async getNotificationsByReceiver(id) {
+        return await this.db.getNotificationsByReceiver(id);
+    }
+
+    async getMessagesByReceiver(id) {
+        return await this.db.getMessagesByReceiver(id);
+    }
+
+    async addUserToTeam(id, user) {
+        return await this.db.addUserToTeam(id, user);
+    }
+
+
 }
 
 module.exports = Controller;

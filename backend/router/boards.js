@@ -4,6 +4,25 @@ const Controller = require("../controller");
 
 const controller = new Controller();
 
+/**
+ * @swagger
+ * /boards:
+ *   get:
+ *     summary: Get all boards
+ *     tags: [Boards]
+ *     responses:
+ *       200:
+ *         description: A list of boards
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Board'
+ *       500:
+ *         description: Internal server error
+ */
+
 // Get all boards
 router.get("/", async (req, res) => {
   try {
@@ -13,6 +32,33 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+
+/**
+ * @swagger
+ * /boards/{id}:
+ *   get:
+ *     summary: Get a specific board by ID
+ *     tags: [Boards]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the board to retrieve
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: A board object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Board'
+ *       404:
+ *         description: Board not found
+ *       500:
+ *         description: Internal server error
+ */
 
 // Get a specific board
 router.get("/:id", async (req, res) => {
@@ -27,11 +73,46 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+
+/**
+ * @swagger
+ * /boards:
+ *   post:
+ *     summary: Create a new board
+ *     tags: [Boards]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Board'
+ *     responses:
+ *       201:
+ *         description: Created board object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Board'
+ *       400:
+ *         description: Bad request
+ *       500:
+ *         description: Internal server error
+ */
+
+
 // Create a new board
 router.post("/", async (req, res) => {
   try {
     const newBoard = await controller.createBoard(req.body);
     res.status(201).json(newBoard);
+    const newNotification = {
+      message: `New board created: ${newBoard.name}`,
+      board_id: newBoard._id,
+      date: new Date(),
+    };
+    const notif = await controller.createNotification(newNotification);
+
+
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -51,6 +132,41 @@ async function getBoard(req, res, next) {
   }
 }
 
+/**
+ * @swagger
+ * /boards/{id}:
+ *   put:
+ *     summary: Update a board by ID
+ *     tags: [Boards]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the board to update
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Board'
+ *     responses:
+ *       200:
+ *         description: Updated board object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Board'
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: Board not found
+ *       500:
+ *         description: Internal server error
+ */
+
+
 router.put("/:id", getBoard, async (req, res) => {
   try {
     const updatedBoard = await controller.updateBoard(req.params.id, req.body);
@@ -59,6 +175,31 @@ router.put("/:id", getBoard, async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+
+/**
+ * @swagger
+ * /boards/{id}:
+ *   delete:
+ *     summary: Delete a board by ID
+ *     tags: [Boards]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the board to delete
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Board deleted
+ *       404:
+ *         description: Board not found
+ *       500:
+ *         description: Internal server error
+ */
+
+
 
 router.delete("/:id", getBoard, async (req, res) => {
   try {

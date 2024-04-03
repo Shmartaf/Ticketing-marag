@@ -6,19 +6,19 @@ const controller = new Controller();
 
 /**
  * @swagger
- * /accounts:
+ * /notifications:
  *   get:
- *     summary: Get all accounts
- *     tags: [Accounts]
+ *     summary: Get all notifications
+ *     tags: [Notifications]
  *     responses:
  *       200:
- *         description: A list of accounts
+ *         description: A list of notifications
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Account'
+ *                 $ref: '#/components/schemas/Notification'
  *       500:
  *         description: Internal server error
  */
@@ -32,26 +32,26 @@ router.get('/', async (req, res) => {
 
 /**
  * @swagger
- * /accounts/{id}:
+ * /notifications/{id}:
  *   get:
- *     summary: Get a specific account by ID
- *     tags: [Accounts]
+ *     summary: Get a specific notification by ID
+ *     tags: [Notifications]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the account to retrieve
+ *         description: ID of the notification to retrieve
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: An account object
+ *         description: A notification object
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Account'
+ *               $ref: '#/components/schemas/Notification'
  *       404:
- *         description: Account not found
+ *         description: Notification not found
  *       500:
  *         description: Internal server error
  */
@@ -62,47 +62,46 @@ router.get('/:id', async (req, res) => {
 });
 
 
+
 /**
  * @swagger
- * /accounts:
+ * /notifications:
  *   post:
- *     summary: Create a new account
- *     tags: [Accounts]
+ *     summary: Create a new notification
+ *     tags: [Notifications]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Account'
+ *             $ref: '#/components/schemas/Notification'
  *     responses:
  *       201:
- *         description: Created account object
+ *         description: Created notification object
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Account'
+ *               $ref: '#/components/schemas/Notification'
  *       400:
  *         description: Bad request
- *       500:
- *         description: Internal server error
  */
-
 router.post('/', async (req, res) => {
     const account = await controller.createAccount(req.body);
     res.json(account);
 });
 
+
 /**
  * @swagger
- * /accounts/{id}:
+ * /notifications/{id}:
  *   put:
- *     summary: Update an account by ID
- *     tags: [Accounts]
+ *     summary: Update a notification by ID
+ *     tags: [Notifications]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the account to update
+ *         description: ID of the notification to update
  *         schema:
  *           type: string
  *     requestBody:
@@ -110,18 +109,18 @@ router.post('/', async (req, res) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Account'
+ *             $ref: '#/components/schemas/Notification'
  *     responses:
  *       200:
- *         description: Updated account object
+ *         description: Updated notification object
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Account'
+ *               $ref: '#/components/schemas/Notification'
  *       400:
  *         description: Bad request
  *       404:
- *         description: Account not found
+ *         description: Notification not found
  *       500:
  *         description: Internal server error
  */
@@ -134,29 +133,29 @@ router.put('/:id', async (req, res) => {
 
 /**
  * @swagger
- * /accounts/{id}:
+ * /notifications/{id}:
  *   delete:
- *     summary: Delete an account by ID
- *     tags: [Accounts]
+ *     summary: Delete a notification by ID
+ *     tags: [Notifications]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the account to delete
+ *         description: ID of the notification to delete
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: Account deleted
+ *         description: Notification deleted
  *       404:
- *         description: Account not found
+ *         description: Notification not found
  *       500:
  *         description: Internal server error
  */
-
 router.delete('/:id', async (req, res) => {
     const account = await controller.deleteAccount(req.params.id);
     res.json(account);
 });
+
 
 module.exports = router;

@@ -1,21 +1,24 @@
 const express = require("express");
 const cors = require("cors");
-
-require("dotenv").config();
-
+const swaggerDocs = require("./utils/swagger"); // Import swaggerDocs function
 // Routes
 const boardRouter = require("./router/boards");
 const teamRouter = require("./router/Teams");
 const accountRouter = require("./router/Accounts");
-// const incidentRouter = require('./router/incidentRouter');
+const notificationRouter = require("./router/notifications");
+const messagingRouter = require("./router/messaging");
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
 // Middleware
 app.use(express.json());
-app.use(cors()); // Add this line to enable CORS
+app.use(cors());
 
+// Swagger documentation
+swaggerDocs(app, PORT); // Pass app and PORT to swaggerDocs function
+
+// Your API routes
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
@@ -23,7 +26,8 @@ app.get("/", (req, res) => {
 app.use("/boards", boardRouter);
 app.use("/teams", teamRouter);
 app.use("/accounts", accountRouter);
-// app.use('/incidents', incidentRouter);
+app.use("/notifications", notificationRouter);
+app.use("/messaging", messagingRouter);
 
 // Start the server
 app.listen(PORT, () => {

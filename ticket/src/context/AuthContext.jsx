@@ -49,6 +49,7 @@ export const AuthProvider = ({ children }) => {
         session: null,
         loading: false,
         isAuthenticated: false,
+        role: "guest"
       };
     }
   };
@@ -58,6 +59,7 @@ export const AuthProvider = ({ children }) => {
     session: null,
     loading: true,
     isAuthenticated: false,
+    role: "guest"
   });
 
   const [isPageLoaded, setIsPageLoaded] = useState(false);
@@ -77,6 +79,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // init();
+    console.log(authState);
   }, []);
 
   const signUp = async ({ email, password, data }) => {
@@ -88,14 +91,7 @@ export const AuthProvider = ({ children }) => {
         data: data,
       });
       console.log(resiv);
-      // const { data } = await supabase.auth.updateUser({
-      //   id: user.id,
-      //   data,
 
-      // })
-      // if (updateUserError) {
-      //   throw updateUserError;
-      // }
       if (res.error) {
         throw error;
       }
@@ -116,36 +112,29 @@ export const AuthProvider = ({ children }) => {
         email,
         password,
       });
-      const { user, session, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      console.log(data, error);
+      const user = data.user;
+      const session = data.session;
+      const role = user.user_metadata.userType;
+
+
 
       if (error) {
         throw error;
       }
 
-      // if (user) {
-      //   // Fetch additional user data
-      //   const { data: userDataFromSupabase, error: userError } = await supabase
-      //     .from("users")
-      //     .select("phone", "role")
-      //     .eq("id", user.id)
-      //     .single();
 
-      //   if (userError) {
-      //     throw userError;
-      //   }
-
-      //   user.phone = userDataFromSupabase.phone;
-      //   user.role = userDataFromSupabase.role;
-      // }
 
       setAuthState({
         user,
         session,
         loading: false,
         isAuthenticated: true,
+        role: role
       });
 
       return { user, session };
@@ -164,6 +153,7 @@ export const AuthProvider = ({ children }) => {
         session: null,
         loading: false,
         isAuthenticated: false,
+        role: "guest"
       });
     } catch (error) {
       console.error("Logout failed", error);

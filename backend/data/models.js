@@ -32,8 +32,29 @@ const accountsSchema = new mongoose.Schema({
   teams: [{ type: String, required: true }],
 });
 
+const notificationSchema = new mongoose.Schema({
+  _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+  message: { type: String, required: true },
+  sender: { type: String, required: true },
+  receiver: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now }
+});
+
+const messagingSchema = new mongoose.Schema({
+  _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+  conversation_id: { type: String, required: true },
+  sender: { type: String, required: true },
+  receiver: { type: String, required: true },
+  message: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now }
+});
+
 module.exports = {
   board: mongoose.model("Board", boardSchema),
   Teams: mongoose.model("Teams", TeamsSchema),
   account: mongoose.model("Accounts", accountsSchema),
+  notification: mongoose.model("Notifications", notificationSchema),
+  messaging: mongoose.model("Messaging", messagingSchema),
 };
+
+
