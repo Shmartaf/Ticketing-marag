@@ -8,7 +8,7 @@ import DynamicTable from "../components/tableTickets";
 import DynamicBoard from "../components/Dashboard/DynamicBoard";
 import Search from "../components/Dashboard/DashboardIndex/Search";
 import Sort from "../components/Dashboard/DashboardIndex/Sort";
-import anitherBoard from '../anotherBoardFromDb.json';
+import anitherBoard from "../anotherBoardFromDb.json";
 import { get, post, put, deleteRequest, BASE_URL } from "../api";
 // import DynamicBoard from "../components/Board/DynamicBoard";
 
@@ -19,13 +19,11 @@ export default function DashboardIndex() {
   const [sort, setSort] = useState(0);
 
   const filteredBoards = boardsData
-
     .filter((board) => {
       const boardName = board.board_name.toLowerCase();
       const searchQuery = search.toLowerCase();
       return boardName.includes(searchQuery);
     })
-
     .sort((a, b) => {
       if (sort === 1) {
         return a.board_name.localeCompare(b.board_name);
@@ -35,8 +33,8 @@ export default function DashboardIndex() {
     });
 
   async function getBoards() {
-    const res = await get("boards")
-    console.log(res);
+    const res = await get("boards");
+
     setBoardsData(res);
   }
 
@@ -58,7 +56,7 @@ export default function DashboardIndex() {
       columns: [
         {
           name: "New Column",
-          type: "text",
+          type: "String",
         },
       ],
     };
@@ -84,7 +82,6 @@ export default function DashboardIndex() {
   useEffect(() => {
     getBoards();
   }, []);
-
 
   return (
     <div className="dashboard-viewer overflow-hidden overscroll-none">
@@ -137,8 +134,6 @@ export default function DashboardIndex() {
 
       <div className="mt-14 grid grid-cols-1 gap-14">
         {filteredBoards.map((board, i) => (
-          // <DynamicTable board={board} key={i} />
-          // <DynamicTable board={anitherBoard} key={i} />
           <DynamicBoard
             onDelete={() => {
               // setBoardsDemo((prevBoards) => {
@@ -150,7 +145,12 @@ export default function DashboardIndex() {
             onAddColumn={() => {
               setBoardsData((prev) => {
                 const updatedBoards = [...prev];
-                const updatedBoard = { ...updatedBoards[i] };
+                const boardIndex = boardsData.findIndex(
+                  (b) => b._id == board._id
+                );
+                const updatedBoard = {
+                  ...updatedBoards[boardIndex],
+                };
 
                 updatedBoard.columns.push({
                   name: `Column ${updatedBoard.columns.length + 1}`, // Update to use updatedBoard instead of board
@@ -161,7 +161,7 @@ export default function DashboardIndex() {
                   row.data.push("");
                 });
 
-                updatedBoards[i] = updatedBoard;
+                updatedBoards[boardIndex] = updatedBoard;
 
                 return updatedBoards;
               });
@@ -171,7 +171,10 @@ export default function DashboardIndex() {
             onColumnRemove={(index) => {
               setBoardsData((prev) => {
                 const updatedBoards = [...prev];
-                const updatedBoard = { ...updatedBoards[i] };
+                const boardIndex = boardsData.findIndex(
+                  (b) => b._id == board._id
+                );
+                const updatedBoard = { ...updatedBoards[boardIndex] };
 
                 updatedBoard.columns.splice(index, 1);
 
@@ -179,7 +182,7 @@ export default function DashboardIndex() {
                   row.data.splice(index, 1);
                 });
 
-                updatedBoards[i] = updatedBoard;
+                updatedBoards[boardIndex] = updatedBoard;
 
                 return updatedBoards;
               });
@@ -189,7 +192,10 @@ export default function DashboardIndex() {
             onAddRow={() => {
               setBoardsData((prev) => {
                 const updatedBoards = [...prev];
-                const updatedBoard = { ...updatedBoards[i] };
+                const boardIndex = boardsData.findIndex(
+                  (b) => b._id == board._id
+                );
+                const updatedBoard = { ...updatedBoards[boardIndex] };
 
                 const newEmptyRow = updatedBoard.columns.map(() => null);
 
@@ -197,7 +203,7 @@ export default function DashboardIndex() {
                   complete: false,
                   data: newEmptyRow,
                 });
-                updatedBoards[i] = updatedBoard;
+                updatedBoards[boardIndex] = updatedBoard;
 
                 return updatedBoards;
               });
@@ -207,8 +213,11 @@ export default function DashboardIndex() {
             onUpdate={(update) => {
               setBoardsData((prev) => {
                 const newData = [...prev];
+                const boardIndex = boardsData.findIndex(
+                  (b) => b._id == board._id
+                );
                 //@ts-ignore
-                newData[i] = { ...update };
+                newData[boardIndex] = { ...update };
                 return newData;
               });
 
@@ -224,4 +233,3 @@ export default function DashboardIndex() {
     </div>
   );
 }
-
