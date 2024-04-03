@@ -39,6 +39,7 @@ async function post(url, data) {
         },
         body: JSON.stringify(data),
     });
+    console.log("returning res.json() from post");
     return res.json();
 }
 
@@ -64,3 +65,5 @@ async function deleteRequest(url) {
 }
 
 export { get, getWithToken, getId, post, put, deleteRequest, BASE_URL };
+
+

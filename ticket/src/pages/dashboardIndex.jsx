@@ -43,11 +43,13 @@ export default function DashboardIndex() {
   }
 
   async function createBoard() {
+    console.log("trying to create board");
+    // console.log("the user is", user);
     const newBoard = {
       account_id: "65fda85762fb9b8527c7e4bf",
       username: "admin", //
       board_name: "test board create 2",
-      users: [user._id],
+      users: [user.id],
       team: "65fd90dcc254096623474ecc", //
       incidents: [
         {
@@ -64,8 +66,11 @@ export default function DashboardIndex() {
         },
       ],
     };
+    console.log(newBoard);
     const res = await post("boards", newBoard);
+    console.log(res);
     setBoardsData([...boardsData, newBoard]);
+    console.log(boardsData);
   }
 
   async function updateBoards(index) {
