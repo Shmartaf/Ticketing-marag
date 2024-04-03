@@ -6,6 +6,10 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const supabase = createSupabaseClient();
+  const [token, setToken] = useState(null);
+  if (token) {
+    sessionStorage.setItem("token", token);
+  }
   const initialAuthState = async () => {
     try {
       const {
@@ -78,10 +82,48 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    // init();
-    localStorage.setItem("authState", JSON.stringify(authState));
-    console.log(authState);
-  }, []);
+    // const [authState, setAuthState] = useState({
+    //   user: null,
+    //   session: null,
+    //   loading: true,
+    //   isAuthenticated: false,
+    //   role: "guest"
+    // });
+    const fetchData = async () => {
+      try {
+        if (sessionStorage.getItem("token")) {
+          let data = sessionStorage.getItem("token");
+          setToken(data);
+          const supabase_info = await supabase.auth.getUser(data);
+          console.log(supabase_info);
+          setAuthState({
+            user: supabase_info.data.user,
+            session: supabase_info.data.session,
+            loading: false,
+            isAuthenticated: true,
+            role: supabase_info.data.user.user_metadata.userType
+          });
+        }
+        else {
+          console.log("No token found");
+        }
+
+
+        if (authState.isAuthenticated) {
+          console.log("Authenticated");
+        }
+        console.log(authState);
+
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchData();
+
+  }, []); // Empty dependency array to run this effect only once
+
+
 
   const signUp = async ({ email, password, data }) => {
     try {
@@ -137,6 +179,9 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: true,
         role: role
       });
+      // sessionStorage.setItem("token", JSON.stringify(data));
+      sessionStorage.setItem("token", session.access_token);
+      sessionStorage.setItem("authState", JSON.stringify(authState));
 
       return { user, session };
     } catch (error) {

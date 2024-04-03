@@ -172,7 +172,9 @@ router.put("/:id", getBoard, async (req, res) => {
   try {
     const updatedBoard = await controller.updateBoard(req.params.id, req.body);
     res.json(updatedBoard);
+    console.log(updatedBoard);
   } catch (err) {
+    console.log(err);
     res.status(400).json({ message: err.message });
   }
 });
