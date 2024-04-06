@@ -109,6 +109,17 @@ class Controller {
         return await this.db.addUserToTeam(id, user);
     }
 
+    async getBoardsByUser(id) {
+        return await this.db.getBoardsByUser(id);
+    }
+
+    async getTeamsByUser(id) {
+        return await this.db.getTeamsByUser(id);
+    }
+
+    async getAccountByUserId(id) {
+        return await this.db.getAccountByUserId(id);
+    }
 
 }
 

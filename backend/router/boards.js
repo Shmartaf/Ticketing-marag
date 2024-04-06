@@ -213,4 +213,40 @@ router.delete("/:id", getBoard, async (req, res) => {
   }
 });
 
+
+/**
+ * @swagger
+ * /boards/user/{id}:
+ *   get:
+ *     summary: Get all boards for a specific user
+ *     tags: [Boards]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user to retrieve boards for
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: A list of boards
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Board'
+ *       500:
+ *         description: Internal server error
+ */
+
+
+router.get("/user/:id", async (req, res) => {
+  try {
+    const boards = await controller.getBoardsByUser(req.params.id);
+    res.json(boards);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 module.exports = router;

@@ -268,4 +268,49 @@ router.post('/:team_id/user/:id', async (req, res) => {
 }
 );
 
+/**
+ * @swagger
+ * /teams/users/{id}:
+ *   get:
+ *     summary: Get teams for a specific user
+ *     tags: [Teams]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user to retrieve teams for
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Teams retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Team'
+ *       500:
+ *         description: Internal server error
+ */
+
+
+router.get('/users/:id', async (req, res) => {
+    try {
+        const user = await controller.getTeamsByUser(req.params.id);
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+);
+
+
+
+
+
+
+
+
+
 module.exports = router;

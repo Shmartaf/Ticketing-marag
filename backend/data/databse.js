@@ -186,6 +186,46 @@ class DBHandler {
         await team.save();
         return team;
     }
+
+    async getBoardsByUser(userId) {
+        try {
+            // Find user's teams
+            const userTeams = await this.schema.Teams.find({ users: userId });
+            // return userTeams;
+            // Find boards for each team
+            const boards_ids = [].concat(...userTeams.map(team => team.boards));
+            const boards = await this.schema.board.find({ _id: { $in: boards_ids } });
+            return boards;
+        } catch (error) {
+            // Handle error
+            console.error("Error fetching boards by user:", error);
+            throw error;
+        }
+    }
+
+    async getTeamsByUser(userId) {
+        try {
+            const teams = await this.schema.Teams.find({ users: userId });
+            return teams;
+        } catch (error) {
+            // Handle error
+            console.error("Error fetching teams by user:", error);
+            throw error;
+        }
+    }
+
+    async getAccountByUserId(userId) {
+        try {
+            const teams = await this.getTeamsByUser(userId);
+            const team_ids = teams.map(team => team._id);
+            const account = await this.schema.account.find({ teams: { $in: team_ids } });
+            return account;
+        } catch (error) {
+            // Handle error
+            console.error("Error fetching account by user:", error);
+            throw error;
+        }
+    }
 }
 
 

@@ -359,11 +359,10 @@ const ColumnDropdown = ({ onRemove, onChange }) => {
 
       <ul
         ref={modalRef}
-        className={`${
-          open
+        className={`${open
             ? `opacity-100 visible translate-y-0 scale-100`
             : `opacity-0 invisible scale-95 -translate-y-1`
-        } ul-modal absolute right-0 top-10 bg-white border rounded-xl origin-top-right flex items-center shadow-lg gap-2 px-2.5 py-1.5 transition-all duration-200`}
+          } ul-modal absolute right-0 top-10 bg-white border rounded-xl origin-top-right flex items-center shadow-lg gap-2 px-2.5 py-1.5 transition-all duration-200`}
       >
         <li
           onClick={() => {
@@ -392,7 +391,7 @@ const ColumnDropdown = ({ onRemove, onChange }) => {
         <Divider orientation="vertical" flexItem />
 
         <StyledDialog
-          onClose={() => {}}
+          onClose={() => { }}
           button={
             <li className="flex items-center gap-1 text-sm cursor-pointer hover:text-blue-500 transition-all duration-200">
               <svg
