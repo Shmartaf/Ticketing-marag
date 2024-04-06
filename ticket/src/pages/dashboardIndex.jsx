@@ -147,7 +147,6 @@ export default function DashboardIndex() {
 
       <div className="mt-14 grid grid-cols-1 gap-14">
         {filteredBoards.map((board, i) => (
-          // <DynamicTable board={board} key={i} />
           // <DynamicTable board={anitherBoard} key={i} />
           <DynamicBoard
             onDelete={() => {
