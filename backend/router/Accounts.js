@@ -159,4 +159,35 @@ router.delete('/:id', async (req, res) => {
     res.json(account);
 });
 
+/**
+ * @swagger
+ * /accounts/users/{id}:
+ *   get:
+ *     summary: Get account by user ID
+ *     tags: [Accounts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user to retrieve account
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: An account object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Account'
+ *       404:
+ *         description: Account not found
+ *       500:
+ *         description: Internal server error
+ */
+
+
+router.get('/users/:id', async (req, res) => {
+    const account = await controller.getAccountByUserId(req.params.id);
+    res.json(account);
+});
 module.exports = router;

@@ -359,6 +359,7 @@ const ColumnDropdown = ({ onRemove, onChange }) => {
 
       <ul
         ref={modalRef}
+
         className={`${
           open
             ? `opacity-100 visible translate-y-0 scale-100`

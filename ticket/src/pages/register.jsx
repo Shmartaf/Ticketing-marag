@@ -18,7 +18,11 @@ export default function Register() {
 
   const SignUp = async (e) => {
     e.preventDefault();
-    const res = await signUp({ email, password, data: { full_name: name, email: email, userType: userType } });
+    const res = await signUp({
+      email, password,
+      data:
+        { full_name: name, email: email, userType: userType }
+    });
     console.log(res);
     Navigate("/login");
 

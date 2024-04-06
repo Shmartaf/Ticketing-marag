@@ -11,14 +11,18 @@ import Sort from "../components/Dashboard/DashboardIndex/Sort";
 import anitherBoard from "../anotherBoardFromDb.json";
 import { get, post, put, deleteRequest, BASE_URL } from "../api";
 import { useAuth } from "../context/AuthContext";
+import { useData } from "../context/DataContext";
 // import DynamicBoard from "../components/Board/DynamicBoard";
 
 export default function DashboardIndex() {
   const [boardsData, setBoardsData] = useState([]);
-
+  console.log(boardsData);
+  const [teamsData, setTeamsData] = useState([]);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(0);
   const { user } = useAuth();
+  const { fetchUsersBoard, fetchUsersTeams } = useData();
+
   console.log(user);
   const filteredBoards = boardsData
     .filter((board) => {
@@ -35,33 +39,44 @@ export default function DashboardIndex() {
     });
 
   async function getBoards() {
-    const res = await get("boards");
+
+    const res = await fetchUsersBoard();
 
     setBoardsData(res);
+  }
+
+  async function getTeams() {
+    const res = await fetchUsersTeams();
+    setTeamsData(res);
+    console.log(res);
   }
 
   async function createBoard() {
     console.log("trying to create board");
     // console.log("the user is", user);
     const newBoard = {
-      account_id: "65fda85762fb9b8527c7e4bf",
-      username: "admin", //
-      board_name: "test board create 2",
-      users: [user.id],
-      team: "65fd90dcc254096623474ecc", //
+      board_name: "New Board",
+      team: teamsData, //
       incidents: [
         {
           complete: true,
           data: [null],
         },
       ],
-      __v: 0,
       color: "#3B82F6",
       columns: [
         {
           name: "New Column",
           type: "String",
         },
+        {
+          name: "Date",
+          type: "Date",
+        },
+        {
+          name: "number",
+          type: "number",
+        }
       ],
     };
     console.log(newBoard);
@@ -91,6 +106,7 @@ export default function DashboardIndex() {
 
   useEffect(() => {
     getBoards();
+    getTeams();
   }, []);
 
   return (
@@ -146,6 +162,9 @@ export default function DashboardIndex() {
         {filteredBoards.map((board, i) => (
           <DynamicBoard
             onDelete={() => {
+              console.log("deleting board");
+              updateBoards(i);
+              // deleteRequest(`boards/${board._id}`); 
               // setBoardsDemo((prevBoards) => {
               //   return prevBoards.filter((_, index) => index !== i);
               // });
