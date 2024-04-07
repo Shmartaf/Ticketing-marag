@@ -12,7 +12,7 @@ import anitherBoard from "../anotherBoardFromDb.json";
 import { get, post, put, deleteRequest, BASE_URL } from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useData } from "../context/DataContext";
-import { set } from "mongoose";
+
 // import DynamicBoard from "../components/Board/DynamicBoard";
 
 export default function DashboardIndex() {

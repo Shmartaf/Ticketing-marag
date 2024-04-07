@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
 export default function Sidebar() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const handleLogout = async (event) => {
     event.preventDefault(); // מונעת את ההתנהגות הדיפולטיבית של הקישור
     try {
@@ -14,6 +14,8 @@ export default function Sidebar() {
     }
   };
 
+  const userName = user?.user_metadata?.full_name || "Guest";
+
   return (
     <div className="bg-slate-50/40 min-w-[280px] h-screen border-r shadow-sm sticky top-0 left-0 bottom-0">
       <div className="sidebar-wrap">
@@ -24,7 +26,7 @@ export default function Sidebar() {
               className="w-12 rounded-full border-2 shadow-md border-white"
             />
             <div>
-              <p className="font-semibold">User Name</p>
+              <p className="font-semibold">{userName}</p>
               <p className="font-medium text-sm -mt-[3px] text-gray-500">
                 Organization Name
               </p>
