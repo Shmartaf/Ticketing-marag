@@ -175,8 +175,9 @@ export default function DashboardIndex() {
             key={i}
             onAddColumn={() => {
               setBoardsData((prev) => {
+                // { console.log(prev) }
                 const updatedBoards = [...prev];
-                const boardIndex = boardsData.findIndex(
+                const boardIndex = boards.findIndex(
                   (b) => b._id == board._id
                 );
                 const updatedBoard = {
