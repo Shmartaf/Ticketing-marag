@@ -1,75 +1,48 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { createSupabaseClient } from "../lib/supabaseClient";
-import { get, post, put, deleteRequest, BASE_URL } from "../api";
+import { get } from "../api";
 import { useAuth } from "./AuthContext";
 
 const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
-    const supabase = createSupabaseClient();
     const { user } = useAuth();
     const [boards, setBoards] = useState([]);
-    const [accounts, setAccounts] = useState([]);
     const [teams, setTeams] = useState([]);
 
-    const InitialDataState = async () => {
+    const fetchData = async () => {
         try {
-            const boards = await get("boards");
-            const accounts = await get("accounts");
-            const teams = await get("teams");
-            return {
-                boards,
-                accounts,
-                teams,
-            };
+            if (!user) {
+                return;
+            }
+            const boardsRes = await get(`boards/user/${user.id}`);
+            const teamsRes = await get(`teams/users/${user.id}`);
+            setBoards(boardsRes);
+            setTeams(teamsRes);
         } catch (error) {
-            console.error("Error checking initial data:", error);
-            return {
-                boards: [],
-                accounts: [],
-                teams: [],
-            };
+            console.error("Error fetching data:", error);
+        }
+    };
+
+    const fetchBoards = async () => {
+        try {
+            if (!user) {
+                return;
+            }
+            const boardsRes = await get(`boards/user/${user.id}`);
+            return boardsRes;
+        } catch (error) {
+            console.error("Error fetching boards:", error);
         }
     }
 
     useEffect(() => {
-        const fetchData = async () => {
-            const data = await InitialDataState();
-            setBoards(data.boards);
-            setAccounts(data.accounts);
-            setTeams(data.teams);
-        };
-        fetchData();
-        console.log("Data fetched");
-        console.log("Boards:", boards);
-        console.log("Accounts:", accounts);
-        console.log("Teams:", teams);
-    }, []);
-
-    const fetchUsersBoard = async () => {
-        const res = await get(`boards/user/${user.id}`);
-        setBoards(res);
-        return boards;
-    }
-
-    const fetchUsersTeams = async () => {
-        const res = await get(`teams/users/${user.id}`);
-        setTeams(res);
-        return teams;
-    }
-
-    const fetchUserAccounts = async () => {
-        const res = await get(`accounts/users/${user.id}`);
-        setAccounts(res);
-        return accounts;
-    }
-
-
-
-
+        if (user) {
+            fetchData();
+        }
+    }, [user]); // Call fetchData whenever user changes
 
     return (
-        <DataContext.Provider value={{ boards, accounts, teams, fetchUsersBoard, fetchUsersTeams, fetchUserAccounts }}>
+        <DataContext.Provider value={{ boards, teams, fetchBoards }}>
             {children}
         </DataContext.Provider>
     );
@@ -82,4 +55,3 @@ export const useData = () => {
     }
     return context;
 };
-
