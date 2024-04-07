@@ -42,7 +42,7 @@ export const DataProvider = ({ children }) => {
     }, [user]); // Call fetchData whenever user changes
 
     return (
-        <DataContext.Provider value={{ boards, teams, fetchBoards }}>
+        <DataContext.Provider value={{ boards, teams, fetchData }}>
             {children}
         </DataContext.Provider>
     );
