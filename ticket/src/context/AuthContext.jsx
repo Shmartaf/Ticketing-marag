@@ -126,8 +126,8 @@ export const AuthProvider = ({ children }) => {
         session: null,
         loading: false,
         isAuthenticated: false,
-        role: "guest",
-      });
+        role: "guest"
+      });console.log("done")
     } catch (error) {
       console.error("Logout failed", error);
       throw error;
