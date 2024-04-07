@@ -9,7 +9,6 @@ import Sort from "../components/Dashboard/DashboardIndex/Sort";
 import { get, post, put, deleteRequest, BASE_URL } from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useData } from "../context/DataContext";
-// const { fetchData } = useData();
 
 
 export default function DashboardIndex() {
