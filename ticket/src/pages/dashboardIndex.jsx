@@ -12,19 +12,23 @@ import anitherBoard from "../anotherBoardFromDb.json";
 import { get, post, put, deleteRequest, BASE_URL } from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useData } from "../context/DataContext";
+import { set } from "mongoose";
 // import DynamicBoard from "../components/Board/DynamicBoard";
 
 export default function DashboardIndex() {
-  const [boardsData, setBoardsData] = useState([]);
-  console.log(boardsData);
+  // console.log(boardsData);
   const [teamsData, setTeamsData] = useState([]);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(0);
   const { user } = useAuth();
-  const { fetchUsersBoard, fetchUsersTeams } = useData();
+  const { boards, teams } = useData();
+  const [boardsData, setBoardsData] = useState(boards);
 
-  console.log(user);
-  const filteredBoards = boardsData
+  console.log(boards);
+
+  // console.log(user);
+  // getBoards();
+  const filteredBoards = boards
     .filter((board) => {
       const boardName = board.board_name.toLowerCase();
       const searchQuery = search.toLowerCase();
@@ -38,22 +42,19 @@ export default function DashboardIndex() {
       }
     });
 
-  async function getBoards() {
+  // async function getBoards() {
+  //   const res = await fetchUsersBoard();
+  //   setBoardsData(res);
+  // }
 
-    const res = await fetchUsersBoard();
-
-    setBoardsData(res);
-  }
-
-  async function getTeams() {
-    const res = await fetchUsersTeams();
-    setTeamsData(res);
-    console.log(res);
-  }
+  // async function getTeams() {
+  //   const res = await fetchUsersTeams();
+  //   setTeamsData(res);
+  //   // console.log(res);
+  // }
 
   async function createBoard() {
     console.log("trying to create board");
-    // console.log("the user is", user);
     const newBoard = {
       board_name: "New Board",
       team: teamsData, //
@@ -105,11 +106,12 @@ export default function DashboardIndex() {
   }
 
   useEffect(() => {
-    getBoards();
-    getTeams();
-  }, []);
 
-  return (
+    setBoardsData(boards);
+    // getTeams();
+
+  }, boardsData);
+  return user ? (
     <div className="dashboard-viewer overflow-hidden overscroll-none">
       <h3 className="text-[32px] leading-10 font-semibold tracking-[-0.01em] flex items-center gap-4">
         Boards List
@@ -118,7 +120,7 @@ export default function DashboardIndex() {
         </StyledTooltip>
       </h3>
       <h6 className="text-[17px] font-medium text-gray-500 tracking-[-0.01em]">
-        Welcome back, User Name |{" "}
+        Welcome back, {user.name} |{" "}
         {new Date().toLocaleString("default", {
           month: "long",
           day: "numeric",
@@ -164,7 +166,7 @@ export default function DashboardIndex() {
             onDelete={() => {
               console.log("deleting board");
               updateBoards(i);
-              // deleteRequest(`boards/${board._id}`); 
+              // deleteRequest(`boards/${board._id}`);
               // setBoardsDemo((prevBoards) => {
               //   return prevBoards.filter((_, index) => index !== i);
               // });
@@ -255,10 +257,11 @@ export default function DashboardIndex() {
           />
         ))}
 
-        {filteredBoards.length == 0 && (
+        {filteredBoards.length === 0 && (
           <div className="text-xl">No boards found.</div>
         )}
       </div>
     </div>
-  );
+  ) : null;
+
 }

@@ -1,139 +1,78 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { createSupabaseClient } from "../lib/supabaseClient";
-// import { BASE_URL } from "./api";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const supabase = createSupabaseClient();
-  const [token, setToken] = useState(null);
-  if (token) {
-    sessionStorage.setItem("token", token);
-  }
-  const initialAuthState = async () => {
-    try {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
-      const session = supabase.auth.session();
-      const isAuthenticated = !!user && !!session;
-
-      if (error) {
-        throw error;
-      }
-
-      let userData = {};
-
-      if (isAuthenticated) {
-        // Fetch additional user data
-        const { data: userDataFromSupabase, error: userError } = await supabase
-          .from("users")
-          .select("phone", "role")
-          .eq("id", user.id)
-          .single();
-
-        if (userError) {
-          throw userError;
-        }
-
-        userData = userDataFromSupabase;
-      }
-
-      return {
-        user: isAuthenticated ? { ...user, ...userData } : null,
-        session: isAuthenticated ? session : null,
-        loading: false,
-        isAuthenticated,
-      };
-    } catch (error) {
-      console.error("Error checking initial authentication:", error);
-      return {
-        user: null,
-        session: null,
-        loading: false,
-        isAuthenticated: false,
-        role: "guest"
-      };
-    }
-  };
-
   const [authState, setAuthState] = useState({
     user: null,
     session: null,
     loading: true,
     isAuthenticated: false,
-    role: "guest"
+    role: "guest",
   });
 
-  const [isPageLoaded, setIsPageLoaded] = useState(false);
-
-  const init = async () => {
-    if (!isPageLoaded) {
-      setIsPageLoaded(true);
-
-      const initialState = await initialAuthState();
-      setAuthState(initialState);
-
-      if (!initialState.isAuthenticated) {
-        window.location.href = "/login";
-      }
-    }
-  };
-
   useEffect(() => {
-    // const [authState, setAuthState] = useState({
-    //   user: null,
-    //   session: null,
-    //   loading: true,
-    //   isAuthenticated: false,
-    //   role: "guest"
-    // });
-    const fetchData = async () => {
+    const initialAuthState = async () => {
       try {
-        if (sessionStorage.getItem("token")) {
-          let data = sessionStorage.getItem("token");
-          setToken(data);
-          const supabase_info = await supabase.auth.getUser(data);
-          console.log(supabase_info);
-          setAuthState({
-            user: supabase_info.data.user,
-            session: supabase_info.data.session,
-            loading: false,
-            isAuthenticated: true,
-            role: supabase_info.data.user.user_metadata.userType
-          });
-        }
-        else {
-          console.log("No token found");
+        const { data: userData, error: userError } = await supabase.auth.getUser();
+        const session = supabase.auth.session;
+
+        if (userError) {
+          throw userError;
         }
 
+        let fetchedUser = null;
+        let fetchedSession = null;
+        let fetchedRole = "guest";
 
-        if (authState.isAuthenticated) {
-          console.log("Authenticated");
+        if (!!userData && !!session) {
+          // Fetch additional user data
+          const { data: userDataFromSupabase, error: userDataError } = await supabase
+            .from("users")
+            .select("phone", "role")
+            .eq("id", userData.id)
+            .single();
+
+          if (userDataError) {
+            throw userDataError;
+          }
+
+          fetchedUser = { ...userData, ...userDataFromSupabase };
+          fetchedSession = session;
+          fetchedRole = userDataFromSupabase?.role || "guest";
         }
-        console.log(authState);
 
+        setAuthState({
+          user: fetchedUser,
+          session: fetchedSession,
+          loading: false,
+          isAuthenticated: !!fetchedUser && !!fetchedSession,
+          role: fetchedRole,
+        });
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error checking initial authentication:", error);
+        setAuthState({
+          user: null,
+          session: null,
+          loading: false,
+          isAuthenticated: false,
+          role: "guest",
+        });
       }
     };
 
-    fetchData();
-
-  }, []); // Empty dependency array to run this effect only once
-
-
+    initialAuthState();
+  }, []);
 
   const signUp = async ({ email, password, data }) => {
     try {
       const res = await supabase.auth.signUp({ email, password });
-      console.log(res);
       const resiv = await supabase.auth.updateUser({
         id: res.data.user.id,
         data: data,
       });
-      console.log(resiv);
 
       if (res.error) {
         throw error;
@@ -151,42 +90,30 @@ export const AuthProvider = ({ children }) => {
 
   const login = async ({ email, password }) => {
     try {
-      console.log({
-        email,
-        password,
-      });
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      console.log(data, error);
-      const user = data.user;
-      const session = data.session;
-      const role = user.user_metadata.userType;
-
-
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
       if (error) {
         throw error;
       }
 
-
+      const user = data.user;
+      const session = data.session;
+      const role = user.user_metadata.userType;
 
       setAuthState({
         user,
         session,
         loading: false,
         isAuthenticated: true,
-        role: role
+        role,
       });
-      // sessionStorage.setItem("token", JSON.stringify(data));
-      sessionStorage.setItem("token", session.access_token);
-      sessionStorage.setItem("authState", JSON.stringify(authState));
 
+      sessionStorage.setItem("token", session.access_token);
+      console.log("Logged in successfully");
+      console.log(user);
       return { user, session };
     } catch (error) {
       console.error("Login failed", error);
-      alert("Login failed:" + error);
       throw error;
     }
   };
@@ -199,7 +126,7 @@ export const AuthProvider = ({ children }) => {
         session: null,
         loading: false,
         isAuthenticated: false,
-        role: "guest"
+        role: "guest",
       });
     } catch (error) {
       console.error("Logout failed", error);
