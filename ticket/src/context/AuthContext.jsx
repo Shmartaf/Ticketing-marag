@@ -200,7 +200,7 @@ export const AuthProvider = ({ children }) => {
         loading: false,
         isAuthenticated: false,
         role: "guest"
-      });
+      });console.log("done")
     } catch (error) {
       console.error("Logout failed", error);
       throw error;
