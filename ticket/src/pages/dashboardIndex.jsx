@@ -3,17 +3,14 @@ import React, { useEffect, useRef, useState } from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Divider } from "@mui/material";
 import StyledTooltip from "../assets/StyledTooltip";
-// import Board from "../components/Dashboard/Board";
-import DynamicTable from "../components/tableTickets";
 import DynamicBoard from "../components/Dashboard/DynamicBoard";
 import Search from "../components/Dashboard/DashboardIndex/Search";
 import Sort from "../components/Dashboard/DashboardIndex/Sort";
-import anitherBoard from "../anotherBoardFromDb.json";
 import { get, post, put, deleteRequest, BASE_URL } from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useData } from "../context/DataContext";
-import { set } from "mongoose";
-// import DynamicBoard from "../components/Board/DynamicBoard";
+// const { fetchData } = useData();
+
 
 export default function DashboardIndex() {
   // console.log(boardsData);
@@ -21,14 +18,40 @@ export default function DashboardIndex() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(0);
   const { user } = useAuth();
-  const { boards, teams } = useData();
-  const [boardsData, setBoardsData] = useState(boards);
+  const [boardsData, setBoardsData] = useState([]);
+  const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  console.log(boards);
 
-  // console.log(user);
-  // getBoards();
-  const filteredBoards = boards
+  async function fetchBoards() {
+    const data = await get(`boards/user/${user.id}`);
+    console.log(data);
+    setBoardsData(data);
+    setLoading(false);
+  }
+
+  async function fetchTeams() {
+    const data = await get(`teams/users/${user.id}`);
+    console.log(data);
+    setTeams(data);
+    setLoading(false);
+  }
+
+  const onUpdate = (updatedBoard) => {
+    console.log("Updating board");
+    // const boards = fetchBoards();
+    // const teams = fetchTeams();
+    // setBoardsData(boards);
+    // setTeams(teams);
+    console.log(updatedBoard);
+    // setBoardsData(updatedBoard);
+  };
+
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
+
+  const filteredBoards = boardsData
     .filter((board) => {
       const boardName = board.board_name.toLowerCase();
       const searchQuery = search.toLowerCase();
@@ -42,16 +65,16 @@ export default function DashboardIndex() {
       }
     });
 
-  // async function getBoards() {
-  //   const res = await fetchUsersBoard();
-  //   setBoardsData(res);
-  // }
+  useEffect(() => {
+    setTimeout(() => {
+      fetchBoards();
+      fetchTeams();
+    }, 20000);
 
-  // async function getTeams() {
-  //   const res = await fetchUsersTeams();
-  //   setTeamsData(res);
-  //   // console.log(res);
-  // }
+  }
+    , [user, teamsData, boardsData]);
+
+
 
   async function createBoard() {
     console.log("trying to create board");
@@ -68,7 +91,7 @@ export default function DashboardIndex() {
       columns: [
         {
           name: "New Column",
-          type: "String",
+          type: "text",
         },
         {
           name: "Date",
@@ -105,12 +128,8 @@ export default function DashboardIndex() {
     console.log(data);
   }
 
-  useEffect(() => {
 
-    setBoardsData(boards);
-    // getTeams();
 
-  }, boardsData);
   return user ? (
     <div className="dashboard-viewer overflow-hidden overscroll-none">
       <h3 className="text-[32px] leading-10 font-semibold tracking-[-0.01em] flex items-center gap-4">
@@ -163,98 +182,9 @@ export default function DashboardIndex() {
       <div className="mt-14 grid grid-cols-1 gap-14">
         {filteredBoards.map((board, i) => (
           <DynamicBoard
-            onDelete={() => {
-              console.log("deleting board");
-              updateBoards(i);
-              // deleteRequest(`boards/${board._id}`);
-              // setBoardsDemo((prevBoards) => {
-              //   return prevBoards.filter((_, index) => index !== i);
-              // });
-            }}
             board={board}
             key={i}
-            onAddColumn={() => {
-              setBoardsData((prev) => {
-                // { console.log(prev) }
-                const updatedBoards = [...prev];
-                const boardIndex = boards.findIndex(
-                  (b) => b._id == board._id
-                );
-                const updatedBoard = {
-                  ...updatedBoards[boardIndex],
-                };
-
-                updatedBoard.columns.push({
-                  name: `Column ${updatedBoard.columns.length + 1}`, // Update to use updatedBoard instead of board
-                  type: "text",
-                });
-
-                updatedBoard.incidents.forEach((row) => {
-                  row.data.push("");
-                });
-
-                updatedBoards[boardIndex] = updatedBoard;
-
-                return updatedBoards;
-              });
-
-              updateBoards(i);
-            }}
-            onColumnRemove={(index) => {
-              setBoardsData((prev) => {
-                const updatedBoards = [...prev];
-                const boardIndex = boardsData.findIndex(
-                  (b) => b._id == board._id
-                );
-                const updatedBoard = { ...updatedBoards[boardIndex] };
-
-                updatedBoard.columns.splice(index, 1);
-
-                updatedBoard.incidents.forEach((row) => {
-                  row.data.splice(index, 1);
-                });
-
-                updatedBoards[boardIndex] = updatedBoard;
-
-                return updatedBoards;
-              });
-
-              updateBoards(i);
-            }}
-            onAddRow={() => {
-              setBoardsData((prev) => {
-                const updatedBoards = [...prev];
-                const boardIndex = boardsData.findIndex(
-                  (b) => b._id == board._id
-                );
-                const updatedBoard = { ...updatedBoards[boardIndex] };
-
-                const newEmptyRow = updatedBoard.columns.map(() => null);
-
-                updatedBoard.incidents.push({
-                  complete: false,
-                  data: newEmptyRow,
-                });
-                updatedBoards[boardIndex] = updatedBoard;
-
-                return updatedBoards;
-              });
-
-              updateBoards(i);
-            }}
-            onUpdate={(update) => {
-              setBoardsData((prev) => {
-                const newData = [...prev];
-                const boardIndex = boardsData.findIndex(
-                  (b) => b._id == board._id
-                );
-                //@ts-ignore
-                newData[boardIndex] = { ...update };
-                return newData;
-              });
-
-              updateBoards(i);
-            }}
+            updateFunction={onUpdate}
           />
         ))}
 

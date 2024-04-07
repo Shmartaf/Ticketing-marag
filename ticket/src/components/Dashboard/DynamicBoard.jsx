@@ -1,11 +1,9 @@
 /* eslint-disable no-unused-vars */
 import {
   Avatar,
-  Checkbox,
   Divider,
   MenuItem,
   Select,
-  styled,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import StyledCheckbox from "../../assets/StyledCheckbox";
@@ -13,18 +11,59 @@ import StyledTooltip from "../../assets/StyledTooltip";
 import BoardDropdown from "../Dashboard/Board/BoardDropdown";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import StyledDialog from "../../assets/StyledDialog";
-import InputBase from "@mui/material/InputBase";
+import { put } from "../../api";
 
 export default function DynamicBoard({
   board,
-  hideTitle,
-  onUpdate,
-  onColumnRemove,
-  onAddColumn,
-  onAddRow,
-  onDelete,
+  updateFunction,
 }) {
   const [selected, setSelected] = useState([]);
+  const handleChange = (updatedBoard) => {
+    // Send updatedBoard to the backend to update the board in the database
+    console.log(updatedBoard);
+    put(`boards/${board._id}`, updatedBoard)
+      .then((res) => {
+        console.log(res);
+        updateFunction(res);
+        return res;
+      })
+      .catch((error) => console.error("Error updating board:", error));
+  };
+
+  const handleRowDelete = () => {
+    const updatedBoard = { ...board };
+    const newRows = board.incidents.filter((_, index) => !selected.includes(index));
+    updatedBoard.incidents = newRows;
+    handleChange(updatedBoard);
+    setSelected([]);
+  };
+
+  const onAddRow = () => {
+    const updatedBoard = { ...board };
+    updatedBoard.incidents.push({
+      data: Array(board.columns.length).fill(""),
+      complete: false,
+    });
+    handleChange(updatedBoard);
+  };
+
+  const handleColumnChange = (index, columnType, newName) => {
+    const updatedColumns = [...board.columns];
+    updatedColumns[index] = { ...updatedColumns[index], type: columnType, name: newName };
+    handleChange({ ...board, columns: updatedColumns });
+  };
+
+  const onRemoveColumn = (index) => {
+    const updatedColumns = [...board.columns];
+    updatedColumns.splice(index, 1);
+    handleChange({ ...board, columns: updatedColumns });
+  };
+
+  const handleCompleteToggle = (index) => {
+    const updatedBoard = { ...board };
+    updatedBoard.incidents[index].complete = !updatedBoard.incidents[index].complete;
+    handleChange(updatedBoard);
+  };
 
   return (
     <div className="">
@@ -41,15 +80,7 @@ export default function DynamicBoard({
             <div>
               <button
                 onClick={() => {
-                  const Rows = [...board.rows];
-
-                  selected.forEach((i) => {
-                    Rows.splice(i, 1);
-                  });
-
-                  onUpdate({ ...board, rows: Rows });
-
-                  setSelected([]);
+                  handleRowDelete();
                 }}
                 className="border border-gray-200 rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-black/[0.05] active:scale-[0.975] text-red-600 shadow-sm flex items-center gap-2 py-1.5 px-3 text-[14px]"
               >
@@ -102,7 +133,7 @@ export default function DynamicBoard({
                       <span className="absolute hover:delay-200 inset-0 bg-gradient-to-r from-transparent via-transparent to-gray-50 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-end">
                         <ColumnDropdown
                           onRemove={() => {
-                            onColumnRemove(i);
+                            onRemoveColumn(i);
                           }}
                           onChange={(columnType, newName) => {
                             const updatedColumns = [...board.columns];
@@ -123,7 +154,7 @@ export default function DynamicBoard({
                 <th
                   className="cursor-pointer"
                   onClick={() => {
-                    onAddColumn();
+                    handleColumnChange(board.columns.length, "text", "New Column");
                   }}
                 >
                   <StyledTooltip title="Add new column">
@@ -162,11 +193,10 @@ export default function DynamicBoard({
                     />
                   </td>
                   {row.data.map((col, ic) => (
-                    // <td key={ic}>{board.columns[ic].type}</td>
 
                     <td key={ic} className="px-1">
                       {board.columns[ic] &&
-                        board.columns[ic].type == "String" && (
+                        board.columns[ic].type == "text" && (
                           <input
                             onChange={(e) => {
                               const updatedBoard = { ...board };
@@ -237,11 +267,7 @@ export default function DynamicBoard({
                   ))}
                   <td
                     onClick={() => {
-                      const updatedBoard = { ...board };
-
-                      updatedBoard.incidents[i].complete =
-                        !updatedBoard.incidents[i].complete;
-                      onUpdate(updatedBoard);
+                      handleCompleteToggle(i);
                     }}
                     aria-checked={row.complete}
                     className="aria-checked:bg-green-500 bg-red-500 text-white capitalize cursor-pointer transition-all duration-200 active:scale-90"
@@ -331,7 +357,7 @@ export default function DynamicBoard({
 
 const ColumnDropdown = ({ onRemove, onChange }) => {
   const [open, setOpen] = useState(false);
-  const [columnType, setColumnType] = useState("String"); // Default column type
+  const [columnType, setColumnType] = useState("text"); // Default column type
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -360,11 +386,10 @@ const ColumnDropdown = ({ onRemove, onChange }) => {
       <ul
         ref={modalRef}
 
-        className={`${
-          open
-            ? `opacity-100 visible translate-y-0 scale-100`
-            : `opacity-0 invisible scale-95 -translate-y-1`
-        } ul-modal absolute right-0 top-10 bg-white border rounded-xl origin-top-right flex items-center shadow-lg gap-2 px-2.5 py-1.5 transition-all duration-200`}
+        className={`${open
+          ? `opacity-100 visible translate-y-0 scale-100`
+          : `opacity-0 invisible scale-95 -translate-y-1`
+          } ul-modal absolute right-0 top-10 bg-white border rounded-xl origin-top-right flex items-center shadow-lg gap-2 px-2.5 py-1.5 transition-all duration-200`}
       >
         <li
           onClick={() => {
@@ -393,7 +418,7 @@ const ColumnDropdown = ({ onRemove, onChange }) => {
         <Divider orientation="vertical" flexItem />
 
         <StyledDialog
-          onClose={() => {}}
+          onClose={() => { }}
           button={
             <li className="flex items-center gap-1 text-sm cursor-pointer hover:text-blue-500 transition-all duration-200">
               <svg
