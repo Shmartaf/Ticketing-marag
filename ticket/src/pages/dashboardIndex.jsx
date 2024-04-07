@@ -9,6 +9,7 @@ import Sort from "../components/Dashboard/DashboardIndex/Sort";
 import { get, post, put, deleteRequest, BASE_URL } from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useData } from "../context/DataContext";
+import { set } from "mongoose";
 
 
 export default function DashboardIndex() {
@@ -43,7 +44,7 @@ export default function DashboardIndex() {
     // setBoardsData(boards);
     // setTeams(teams);
     console.log(updatedBoard);
-    // setBoardsData(updatedBoard);
+    setBoardsData(updatedBoard);
   };
 
   // if (loading) {
@@ -65,9 +66,15 @@ export default function DashboardIndex() {
     });
 
   useEffect(() => {
+    if (user && boardsData.length === 0) {
+      fetchBoards();
+      fetchTeams();
+      setLoading(false);
+    }
     setTimeout(() => {
       fetchBoards();
       fetchTeams();
+      setLoading(false);
     }, 20000);
 
   }
