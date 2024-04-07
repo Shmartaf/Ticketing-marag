@@ -114,6 +114,24 @@ export default function Sidebar() {
           </svg>
           Settings
         </a>
+        <a href="/login" className="sidebar-button">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g strokeWidth="0"></g>
+            <g strokeLinecap="round" strokeLinejoin="round"></g>
+            <g>
+              <path
+                d="M11 20H6a2 2 0 01-2-2V6a2 2 0 012-2h5M20 12l-4-4m4 4l-4 4m4-4H10"
+                stroke="currentColor"
+                strokeWidth="1.85"
+              ></path>{" "}
+            </g>
+          </svg>
+          Logout
+        </a>
       </div>
 
       <div className="divider" />
