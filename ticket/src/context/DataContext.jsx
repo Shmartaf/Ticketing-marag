@@ -35,6 +35,8 @@ export const DataProvider = ({ children }) => {
         }
     }
 
+
+
     useEffect(() => {
         if (user) {
             fetchData();

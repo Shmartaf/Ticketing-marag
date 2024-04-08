@@ -138,6 +138,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateUser = async (id, data) => {
+    try {
+      const response = await supabase.auth.updateUser({ id, data });
+      if (response.error) {
+        throw response.error;
+      }
+      return response;
+    } catch (error) {
+      console.error("Error updating user", error);
+      throw error;
+    }
+  }
+
   const logout = async () => {
     try {
       const response = await supabase.auth.signOut();
@@ -153,9 +166,35 @@ export const AuthProvider = ({ children }) => {
       throw error;
     }
   };
+  const fetchUser = async (id) => {
+    try {
+      const data = await supabase.from("users").select("*").eq("id", id).single();
+      console.log(data);
+      if (data.error) {
+        throw data.error;
+      }
+      return data.data;
+    } catch (error) {
+      console.error("Error fetching user", error);
+      throw error;
+    }
+  };
+
+  const inviteMember = async (email) => {
+    try {
+      const { data, error } = await supabase.auth.api.inviteUserByEmail(email);
+      if (error) {
+        throw error;
+      }
+      return data;
+    } catch (error) {
+      console.error("Error inviting member", error);
+      throw error;
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{ ...authState, login, logout, signUp }}>
+    <AuthContext.Provider value={{ ...authState, login, logout, signUp, fetchUser, updateUser, inviteMember }}>
       {children}
     </AuthContext.Provider>
   );
