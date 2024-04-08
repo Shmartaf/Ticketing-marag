@@ -78,6 +78,7 @@ export default function DashboardIndex() {
   useEffect(() => {
     if (!userData && sessionStorage.getItem("authState") !== null) {
       const test = JSON.parse(sessionStorage.getItem("authState"));
+      console.log(test);
       console.log(test); // You will see the updated value here
       setUserData(test);
       console.log("look like you are authenticated already");

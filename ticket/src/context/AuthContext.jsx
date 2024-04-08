@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { createSupabaseClient } from "../lib/supabaseClient";
+import { json } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -116,28 +117,39 @@ export const AuthProvider = ({ children }) => {
         throw error;
       }
 
+      console.log(data);
+      console.log(data.user);
+
       const user = data.user;
       const session = data.session;
       const role = user.user_metadata.userType;
 
-      setAuthState({
+      console.log(user);
+
+      const newAuthState = {
         user,
         session,
         loading: false,
         isAuthenticated: true,
         role,
-      });
+      };
+
+      console.log(newAuthState);
+      console.log(JSON.stringify(newAuthState));
 
       sessionStorage.setItem("token", session.access_token);
-      sessionStorage.setItem("authState", authState);
+      sessionStorage.setItem("authState", JSON.stringify(newAuthState));
+
       console.log("Logged in successfully");
       console.log(user);
+
       return { user, session };
     } catch (error) {
       console.error("Login failed", error);
       throw error;
     }
   };
+
 
   const updateUser = async (id, data) => {
     try {
