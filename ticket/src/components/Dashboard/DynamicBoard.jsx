@@ -19,7 +19,6 @@ export default function DynamicBoard({
 }) {
   const [selected, setSelected] = useState([]);
   const handleChange = (updatedBoard) => {
-    // Send updatedBoard to the backend to update the board in the database
     console.log(updatedBoard);
     put(`boards/${board._id}`, updatedBoard)
       .then((res) => {
@@ -31,11 +30,21 @@ export default function DynamicBoard({
   };
 
   const handleRowDelete = () => {
-    const updatedBoard = { ...board };
-    const newRows = board.incidents.filter((_, index) => !selected.includes(index));
-    updatedBoard.incidents = newRows;
-    handleChange(updatedBoard);
-    setSelected([]);
+    if (sessionStorage.getItem("authState")) {
+      const authData = JSON.parse(sessionStorage.getItem("authState"));
+      console.log(authData);
+      const role = authData.role;
+      if (role === "teamMember") {
+        alert("You do not have permission to delete rows");
+      } else {
+        const updatedBoard = { ...board };
+        const newRows = board.incidents.filter((_, index) => !selected.includes(index));
+        updatedBoard.incidents = newRows;
+        handleChange(updatedBoard);
+        setSelected([]);
+      }
+    }
+
   };
 
   const onAddRow = () => {
@@ -50,7 +59,14 @@ export default function DynamicBoard({
   const handleColumnChange = (index, columnType, newName) => {
     const updatedColumns = [...board.columns];
     updatedColumns[index] = { ...updatedColumns[index], type: columnType, name: newName };
-    handleChange({ ...board, columns: updatedColumns });
+    board.incidents.map((row, i) => {
+      if (row.data.length < updatedColumns.length) {
+        const updatedBoard = { ...board };
+        updatedBoard.incidents[i].data.push("");
+        handleChange(updatedBoard);
+      }
+    });
+    // handleChange({ ...board, columns: updatedColumns });
   };
 
   const onRemoveColumn = (index) => {
@@ -140,7 +156,16 @@ export default function DynamicBoard({
                             console.log(columnType, newName);
                             updatedColumns[i].type = columnType;
                             updatedColumns[i].name = newName;
-                            onUpdate({ ...board, columns: updatedColumns });
+                            handleChange({ ...board, columns: updatedColumns });
+                            board.incidents.map((row, index) => {
+                              if (row.data.length < updatedColumns.length) {
+                                const updatedBoard = { ...board };
+                                updatedBoard.incidents[index].data.push("");
+                                handleChange(updatedBoard);
+                              }
+                            }
+                            );
+
                           }}
                           key={i}
                         />
@@ -202,9 +227,9 @@ export default function DynamicBoard({
                               const updatedBoard = { ...board };
                               updatedBoard.incidents[i].data[ic] =
                                 e.target.value;
-                              onUpdate(updatedBoard);
+                              handleChange(updatedBoard);
                             }}
-                            value={col}
+                            value={col || "Empty"}
                             placeholder="Empty"
                             className="text-center w-auto h-[36px]"
                           />
@@ -235,7 +260,7 @@ export default function DynamicBoard({
                                 e.target.value;
                               onUpdate(updatedBoard);
                             }}
-                            value={col}
+                            value={col || 0}
                             type="number"
                             placeholder="Empty"
                             className="text-center w-auto h-[36px]"
@@ -289,6 +314,7 @@ export default function DynamicBoard({
 
                           <div className="grid grid-cols-[5fr_1fr] items-center gap-2 mt-5">
                             <input
+                              value={"Message..."}
                               placeholder="Message"
                               rows={1}
                               className="border border-gray-300 text-[15px] px-3.5 py-2 rounded-lg shadow-sm w-full"
@@ -329,7 +355,7 @@ export default function DynamicBoard({
                 </tr>
               ))}
               <tr className="board-row border-t">
-                <span className="px-3 py-1.5 block">
+                <td className="px-3 py-1.5 block">
                   <svg
                     onClick={onAddRow}
                     xmlns="http://www.w3.org/2000/svg"
@@ -345,7 +371,7 @@ export default function DynamicBoard({
                       d="M12 4.5v15m7.5-7.5h-15"
                     />
                   </svg>
-                </span>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -442,6 +468,7 @@ const ColumnDropdown = ({ onRemove, onChange }) => {
             <div className="mt-2">
               <input
                 id="col-name"
+                value={"Column Name"}
                 placeholder="Column's name"
                 className="border-[1.5px] mt-1.5 mb-4 border-gray-300 text-[17px] px-3.5 py-2 rounded-xl shadow-sm w-full"
               />

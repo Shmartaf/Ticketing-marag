@@ -9,7 +9,6 @@ import Sort from "../components/Dashboard/DashboardIndex/Sort";
 import { get, post, put, deleteRequest, BASE_URL } from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useData } from "../context/DataContext";
-import { set } from "mongoose";
 
 
 export default function DashboardIndex() {
@@ -19,19 +18,29 @@ export default function DashboardIndex() {
   const [sort, setSort] = useState(0);
   const { user } = useAuth();
   const [boardsData, setBoardsData] = useState([]);
+  const [filteredBoards, setFilteredBoards] = useState([]);
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [userData, setUserData] = useState(null);
 
 
   async function fetchBoards() {
-    const data = await get(`boards/user/${user.id}`);
+    console.log(userData);
+    if (!userData) {
+      return;
+    }
+    const data = await get(`boards/user/${userData.user.id}`);
     console.log(data);
     setBoardsData(data);
     setLoading(false);
   }
 
   async function fetchTeams() {
-    const data = await get(`teams/users/${user.id}`);
+    if (!user) {
+      return;
+    }
+    const data = await get(`teams/users/${userData.user.id}`);
     console.log(data);
     setTeams(data);
     setLoading(false);
@@ -47,38 +56,43 @@ export default function DashboardIndex() {
     setBoardsData(updatedBoard);
   };
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  const filteredBoards = boardsData
-    .filter((board) => {
-      const boardName = board.board_name.toLowerCase();
-      const searchQuery = search.toLowerCase();
-      return boardName.includes(searchQuery);
-    })
-    .sort((a, b) => {
-      if (sort === 1) {
-        return a.board_name.localeCompare(b.board_name);
-      } else {
-        return b.board_name.localeCompare(a.board_name);
-      }
-    });
+  useEffect(() => {
+    if (boardsData.length > 0 && userData) {
+      const filteredBoards = boardsData
+        .filter((board) => {
+          const boardName = board.board_name.toLowerCase();
+          const searchQuery = search.toLowerCase();
+          return boardName.includes(searchQuery);
+        })
+        .sort((a, b) => {
+          if (sort === 1) {
+            return a.board_name.localeCompare(b.board_name);
+          } else {
+            return b.board_name.localeCompare(a.board_name);
+          }
+        });
+      setFilteredBoards(filteredBoards);
+    }
+  }, [boardsData, search, sort, userData]); // Add userData to the dependencies array
 
   useEffect(() => {
-    if (user && boardsData.length === 0) {
-      fetchBoards();
-      fetchTeams();
-      setLoading(false);
+    if (!userData && sessionStorage.getItem("authState") !== null) {
+      const test = JSON.parse(sessionStorage.getItem("authState"));
+      console.log(test); // You will see the updated value here
+      setUserData(test);
+      console.log("look like you are authenticated already");
     }
-    setTimeout(() => {
+  }, [userData]); // Add userData to the dependencies array
+
+  useEffect(() => {
+    if (userData) {
       fetchBoards();
       fetchTeams();
-      setLoading(false);
-    }, 20000);
+    }
+  }, [userData]); // Only execute when userData changes
 
-  }
-    , [user, teamsData, boardsData]);
+
+
 
 
 

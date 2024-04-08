@@ -62,6 +62,26 @@ export const AuthProvider = ({ children }) => {
         });
       }
     };
+    console.log("arrived here")
+    console.log(sessionStorage.getItem("authState"));
+    console.log(sessionStorage.getItem("token"));
+    if (sessionStorage.getItem("authState")) {
+      const session = sessionStorage.getItem("token");
+      const user = sessionStorage.getItem("authState");
+      setAuthState({
+        user,
+        session,
+        loading: false,
+        isAuthenticated: true,
+        role: user.role,
+      });
+      console.log(session);
+      console.log(user);
+      return;
+    }
+
+
+
 
     initialAuthState();
   }, []);
