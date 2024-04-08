@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
+import { get } from "../api";
 export default function Sidebar() {
-  const { logout, user } = useAuth();
+  const { logout} = useAuth();
+
   const handleLogout = async (event) => {
     event.preventDefault(); // מונעת את ההתנהגות הדיפולטיבית של הקישור
     try {
@@ -13,9 +15,47 @@ export default function Sidebar() {
       // טיפול בשגיאה, למשל הצגת הודעה למשתמש
     }
   };
+  const [userData, setUserData] = useState(null);
+  useEffect(() => {
+    if (!userData && sessionStorage.getItem("authState") !== null) {
+      const test = JSON.parse(sessionStorage.getItem("authState"));
+      console.log(test);
+      setUserData(test);
+      console.log("look like you are authenticated already");
+    }
+  }, [userData]); // Add userData to the dependencies array
+  const userName = userData?.user?.user_metadata?.full_name || "Guest";
 
-  const userName = user?.user_metadata?.full_name || "Guest";
 
+  
+  const fetchUserData = async () => {
+    try {
+      if (sessionStorage.getItem("authState")) {
+        const user = JSON.parse(sessionStorage.getItem("authState"));
+        const userAccount = await get(`accounts/users/${user.user.id}`);
+
+
+        user.userAccount = userAccount;
+
+        setUserData(user);
+        console.log(user);
+        
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+  console.log(userData);
+  let accountNames = '';
+  if (userData && userData.userAccount) {
+    // Map through the array to get all account names
+    accountNames = userData.userAccount.map(account => account.account_name).join(', ');
+  }
+  console.log(accountNames);
   return (
     <div className="bg-slate-50/40 min-w-[280px] h-screen border-r shadow-sm sticky top-0 left-0 bottom-0">
       <div className="sidebar-wrap">
@@ -27,9 +67,7 @@ export default function Sidebar() {
             />
             <div>
               <p className="font-semibold">{userName}</p>
-              <p className="font-medium text-sm -mt-[3px] text-gray-500">
-                Organization Name
-              </p>
+              <p className="font-medium text-sm -mt-[3px] text-gray-500">{accountNames}</p>
             </div>
           </div>
         </div>
