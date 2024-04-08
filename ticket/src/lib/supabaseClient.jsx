@@ -10,8 +10,8 @@ export const createSupabaseClient = () => {
 
     const supabase = createClient(url, key);
 
-    // console.log('Supabase:', supabase);
 
+    // console.log('Supabase:', supabase);
     return supabase;
 };
 
