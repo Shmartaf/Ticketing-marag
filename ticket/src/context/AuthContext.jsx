@@ -129,6 +129,7 @@ export const AuthProvider = ({ children }) => {
       });
 
       sessionStorage.setItem("token", session.access_token);
+      sessionStorage.setItem("authState", authState);
       console.log("Logged in successfully");
       console.log(user);
       return { user, session };
