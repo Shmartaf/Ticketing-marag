@@ -155,17 +155,28 @@ export const AuthProvider = ({ children }) => {
   };
 
 
-  const updateUser = async (id, data) => {
-    try {
-      const response = await supabase.auth.updateUser({ id, data });
-      if (response.error) {
-        throw response.error;
-      }
-      return response;
-    } catch (error) {
-      console.error("Error updating user", error);
-      throw error;
-    }
+  const updateUser = async (id, data2 ) => {
+      //const response = await supabase.auth.updateUser({ email, data: data });
+
+      //console.log(`response: ${JSON.stringify(response)}`);
+      //if (response.error) {
+        //throw response.error;
+      //}
+      //return response;
+     // const { data, error } = await supabase
+        //.from('users')
+        //.update({ raw_user_meta_data: data2 })
+        //.eq('id', id);
+
+        //if (error) {
+          //throw error;
+        //}
+        //console.log(data);
+    //} catch (error) {
+      //console.error("Error updating user", error);
+      //throw error;
+    //}
+    sessionStorage.setItem('users', data2);
   }
 
   const logout = async () => {
@@ -199,7 +210,14 @@ export const AuthProvider = ({ children }) => {
 
   const inviteMember = async (email) => {
     try {
-      const { data, error } = await supabase.auth.api.inviteUserByEmail(email);
+      const { data, error } = await supabase.auth.admin.inviteUserByEmail({
+      email: email,
+      data: {
+        // Additional data you want to set for the user
+        username: 'newUsername',
+        role: 'admin',
+        // Add more fields as needed
+      },});
       if (error) {
         throw error;
       }
