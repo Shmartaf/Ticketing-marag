@@ -32,6 +32,6 @@ app.use("/notifications", notificationRouter);
 app.use("/messaging", messagingRouter);
 
 // Start the server
-app.listen(8080, () => {
+app.listen(PORT, () => {
   logger.logInfo(`Server is running on port ${PORT}`);
 });
