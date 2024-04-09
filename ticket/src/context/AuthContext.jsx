@@ -85,11 +85,13 @@ export const AuthProvider = ({ children }) => {
 
   const signUp = async ({ email, password, data }) => {
     try {
-      const res = await supabase.auth.signUp({ email, password });
+      const res = await supabase.auth.signUp({ email, password, data: data });
+      console.log(res);
       const resiv = await supabase.auth.updateUser({
         id: res.data.user.id,
         data: data,
       });
+      console.log(resiv);
 
       if (res.error) {
         throw error;
@@ -99,6 +101,8 @@ export const AuthProvider = ({ children }) => {
         ...prevState,
         user: res.data.user,
       }));
+
+      return resiv;
     } catch (error) {
       console.error("Sign up failed", error);
       throw error;
@@ -149,6 +153,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+
   const updateUser = async (id, data) => {
     try {
       const response = await supabase.auth.updateUser({ id, data });
@@ -161,6 +166,7 @@ export const AuthProvider = ({ children }) => {
       throw error;
     }
   };
+
 
   const logout = async () => {
     try {
@@ -197,7 +203,14 @@ export const AuthProvider = ({ children }) => {
 
   const inviteMember = async (email) => {
     try {
-      const { data, error } = await supabase.auth.api.inviteUserByEmail(email);
+      const { data, error } = await supabase.auth.admin.inviteUserByEmail({
+      email: email,
+      data: {
+        // Additional data you want to set for the user
+        username: 'newUsername',
+        role: 'admin',
+        // Add more fields as needed
+      },});
       if (error) {
         throw error;
       }

@@ -18,6 +18,8 @@ export default function SettingsPage() {
 
   const handleInviteMemberClick = () => {
     console.log("Inviting member:", invitedMember);
+    inviteMember("barakk123@gmail.com");
+
     // Call your inviteMemberToTeam function here if needed
   };
 
@@ -223,6 +225,7 @@ export default function SettingsPage() {
                       : null
                     }
                   </p>
+                  
                 </div>
 
                 <p className="font-medium mt-1">{member.raw_user_meta_data.userType}</p>
@@ -268,26 +271,50 @@ export default function SettingsPage() {
                           }
                           input={<BootstrapInput />}
                         >
-                          <MenuItem value={0}>Select Role</MenuItem>
-                          <MenuItem value={1}>Super Admin</MenuItem>
-                          <MenuItem value={2}>Team Admin</MenuItem>
-                          <MenuItem value={3}>Team Member</MenuItem>
+                          <MenuItem value={0}>Super Admin</MenuItem>
+                          <MenuItem value={1}>Team Admin</MenuItem>
+                          <MenuItem value={2}>Team Member</MenuItem>
                         </Select>
                       </div>
                     }
                     title={"Change Role"}
                     closeTrigger={
                       <button
-                        onClick={() => {
+                        onClick={async () => {
                           console.log(updateRole);
-                          //
+                          let roleLabel = ""; // For storing the role label
 
-                          setUpdateRole(0);
+                          // Check if a role is selected
+                          
+                            // Assuming roles are defined like this elsewhere in your component
+                          const roles = [
+                            { value: 0, label: "Super Admin" },
+                            { value: 1, label: "Team Admin" },
+                            { value: 2, label: "Team Member" },
+                          ];
+                            
+                            // Find the role label based on selected value
+                          const selectedRole = roles.find(role => role.value === updateRole);
+                          if (selectedRole) roleLabel = selectedRole.label;
+                            console.log(roleLabel);
+                            console.log(JSON.stringify(member));
+                            console.log(`member.id: ${member.id}`);
+                            
+                            member.raw_user_meta_data.userType = roleLabel;
+                            const memberData = {
+                              userType: member.raw_user_meta_data.userType
+                            }
+                            console.log(`member type: ${member.raw_user_meta_data.userType}`);
+                            //const result = await inviteMember("orbasker@gmail.com");
+                            //console.log(result);
+                            // Reset the selection (if needed)
+                            // setUpdateRole(0); // Uncomment if you want to reset the role selector after selection
                         }}
                         className="text-white font-medium py-[7px] mt-1 bg-gradient-to-t from-[#467ae9] to-blue-500 border border-black/10 text-[15px]"
                       >
                         Update Role
                       </button>
+
                     }
                   />
 
@@ -315,4 +342,4 @@ export default function SettingsPage() {
       </div>
     </div>
   )
-};
+}

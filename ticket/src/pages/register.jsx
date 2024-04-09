@@ -1,31 +1,65 @@
-import React, { useState } from "react";
-// import { createSupabaseClient } from '../lib/supabaseClient'
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { get, post } from "../api";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const { signUp } = useAuth();
   const [userType, setUserType] = useState("");
-
   const [viewPassword, setViewPassword] = useState(false);
+  const [teams, setTeams] = useState([]);
+  const [accounts, setAccounts] = useState([]);
   const Navigate = useNavigate();
-  // const navigate = Navigate();
-  // const supabase = createSupabaseClient();
-  // console.log(supabase);
+  const { signUp } = useAuth();
+
+
+  useEffect(() => {
+    // Fetch teams and accounts data from your endpoints
+    fetchTeams();
+    fetchAccounts();
+  }, []);
+
+  const fetchTeams = async () => {
+    const response = await get("teams");
+    console.log(response);
+    setTeams(response);
+  };
+
+  const fetchAccounts = async () => {
+
+    const response = await get("accounts");
+    console.log(response);
+    setAccounts(response);
+  };
 
   const SignUp = async (e) => {
     e.preventDefault();
+
+    const email = e.target.email.value;
+    const name = e.target.name.value;
+    const password = e.target.password.value;
+    const userType = e.target.userType.value;
+    const teams = e.target.team.value;
+    const accounts = e.target.account.value;
+    console.log(email, name, password, userType, teams, accounts);
     const res = await signUp({
       email,
       password,
-      data: { full_name: name, email: email, userType: userType },
+      data: { full_name: name, email: email, userType: userType, team: teams, account: accounts },
     });
-    console.log(res);
-    Navigate("/login");
 
+    console.log(res);
+    // add the user to the team
+    console.log(res.data.user);
+    console.log(teams);
+    // const team = teams.find((team) => team._id === teams);
+    // console.log(team);
+    debugger
+    const new_member = await post(`teams/${teams}/user/${res.data.user.id}`);
+    console.log(new_member);
+    Navigate("/login");
     alert("Check your email for the confirmation link");
   };
 
@@ -89,6 +123,36 @@ export default function Register() {
             <option value="superAdmin">Super Admin</option>
             <option value="admin">Admin</option>
             <option value="teamMember">Team Member</option>
+          </select>
+
+          <label htmlFor="team" className="text-gray-500">
+            Team
+          </label>
+          <select
+            id="team"
+            className="border-[1.5px] mt-1.5 border-gray-300 text-[17px] px-3.5 py-2 rounded-xl shadow-sm w-full"
+          >
+            <option value="">Select Team</option>
+            {teams.map((team) => (
+              <option key={team._id} value={team._id}>
+                {team.team_name}
+              </option>
+            ))}
+          </select>
+
+          <label htmlFor="account" className="text-gray-500">
+            Account
+          </label>
+          <select
+            id="account"
+            className="border-[1.5px] mt-1.5 border-gray-300 text-[17px] px-3.5 py-2 rounded-xl shadow-sm w-full"
+          >
+            <option value="">Select Account</option>
+            {accounts.map((account) => (
+              <option key={account._id} value={account._id}>
+                {account.account_name}
+              </option>
+            ))}
           </select>
 
           <button
