@@ -30,7 +30,6 @@ export const AuthProvider = ({ children }) => {
         let fetchedRole = "guest";
 
         if (!!userData && !!session) {
-          // Fetch additional user data
           const { data: userDataFromSupabase, error: userDataError } =
             await supabase
               .from("users")
@@ -86,12 +85,10 @@ export const AuthProvider = ({ children }) => {
   const signUp = async ({ email, password, data }) => {
     try {
       const res = await supabase.auth.signUp({ email, password, data: data });
-      console.log(res);
       const resiv = await supabase.auth.updateUser({
         id: res.data.user.id,
         data: data,
       });
-      console.log(resiv);
 
       if (res.error) {
         throw error;
@@ -120,14 +117,9 @@ export const AuthProvider = ({ children }) => {
         throw error;
       }
 
-      console.log(data);
-      console.log(data.user);
-
       const user = data.user;
       const session = data.session;
       const role = user.user_metadata.userType;
-
-      console.log(user);
 
       const newAuthState = {
         user,
@@ -137,14 +129,8 @@ export const AuthProvider = ({ children }) => {
         role,
       };
 
-      console.log(newAuthState);
-      console.log(JSON.stringify(newAuthState));
-
       sessionStorage.setItem("token", session.access_token);
       sessionStorage.setItem("authState", JSON.stringify(newAuthState));
-
-      console.log("Logged in successfully");
-      console.log(user);
 
       return { user, session };
     } catch (error) {
@@ -190,7 +176,6 @@ export const AuthProvider = ({ children }) => {
         .select("*")
         .eq("id", id)
         .single();
-      console.log(data);
       if (data.error) {
         throw data.error;
       }
@@ -206,10 +191,8 @@ export const AuthProvider = ({ children }) => {
       const { data, error } = await supabase.auth.admin.inviteUserByEmail({
       email: email,
       data: {
-        // Additional data you want to set for the user
         username: 'newUsername',
         role: 'admin',
-        // Add more fields as needed
       },});
       if (error) {
         throw error;

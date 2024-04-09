@@ -1,6 +1,5 @@
 class DBHandler {
     async getBoards() {
-      // Return mock data for getBoards method
       return [{
         "_id": "6610006cad7d6abd8d1897c6",
         "color": "#3B82F6",
@@ -81,12 +80,10 @@ class DBHandler {
     };
   
     async createBoard(board) {
-      // Simulate creating a board, maybe just return the input for simplicity
       return board;
     }
     
     async updateBoard(id, board) {
-        // Assuming `someBoard` represents the state before updating
         const someBoard = {
             "_id": '6608238ac439c4adb28502c3',
             "username": "admin",
@@ -254,7 +251,6 @@ class DBHandler {
             ]
         };
         
-        // Simulate updating the board by merging `someBoard` with `board`
         const updatedBoard = { ...someBoard, ...board };
         return updatedBoard;
     }
@@ -415,7 +411,6 @@ class DBHandler {
           ]
         return notifications;
     }
-    // Mock other methods as needed...
   }
   
   module.exports = DBHandler;

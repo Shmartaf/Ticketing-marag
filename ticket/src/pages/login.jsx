@@ -13,7 +13,6 @@ export default function Login() {
     e.preventDefault();
     try {
       const res = await login({ email, password });
-      console.log(res);
       Navigate("/dashboard");
 
     } catch (error) {

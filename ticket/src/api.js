@@ -1,4 +1,3 @@
-// const BASE_URL = "http://localhost:5005";
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_API_URL;
 
 async function get(url) {
@@ -40,7 +39,6 @@ async function post(url, data) {
         },
         body: JSON.stringify(data),
     });
-    console.log("returning res.json() from post");
     return res.json();
 }
 

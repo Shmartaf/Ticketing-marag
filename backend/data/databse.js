@@ -46,7 +46,6 @@ class DBHandler {
 
     async createBoard(board) {
         const newBoard = this.schema.board.create(board);
-        // await newBoard.save();
         return newBoard;
     }
 
@@ -189,15 +188,11 @@ class DBHandler {
 
     async getBoardsByUser(userId) {
         try {
-            // Find user's teams
             const userTeams = await this.schema.Teams.find({ users: userId });
-            // return userTeams;
-            // Find boards for each team
             const boards_ids = [].concat(...userTeams.map(team => team.boards));
             const boards = await this.schema.board.find({ _id: { $in: boards_ids } });
             return boards;
         } catch (error) {
-            // Handle error
             console.error("Error fetching boards by user:", error);
             throw error;
         }
@@ -208,7 +203,6 @@ class DBHandler {
             const teams = await this.schema.Teams.find({ users: userId });
             return teams;
         } catch (error) {
-            // Handle error
             console.error("Error fetching teams by user:", error);
             throw error;
         }
@@ -221,7 +215,6 @@ class DBHandler {
             const account = await this.schema.account.find({ teams: { $in: team_ids } });
             return account;
         } catch (error) {
-            // Handle error
             console.error("Error fetching account by user:", error);
             throw error;
         }

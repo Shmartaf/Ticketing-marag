@@ -19,17 +19,14 @@ export default function DynamicBoard({
   let userData;
   try {
     userData = JSON.parse(user);
-    console.log(userData);
   } catch (error) {
     userData = {};
   }
 
   const [selected, setSelected] = useState([]);
   const handleChange = (updatedBoard) => {
-    console.log(updatedBoard);
     put(`boards/${board._id}`, updatedBoard)
       .then((res) => {
-        console.log(res);
         updateFunction(res);
         return res;
       })
@@ -39,7 +36,6 @@ export default function DynamicBoard({
   const handleRowDelete = () => {
     if (sessionStorage.getItem("authState")) {
       const authData = JSON.parse(sessionStorage.getItem("authState"));
-      console.log(authData);
       const role = authData.role;
       if (role === "teamMember") {
         alert("You do not have permission to delete rows");
@@ -75,7 +71,6 @@ export default function DynamicBoard({
 
     board.incidents.map((row, i) => {
       if (row.data.length < updatedColumns.length) {
-        // const updatedBoard = { ...board };
         board.incidents[i].data.push("");
       }
     });
@@ -168,7 +163,6 @@ export default function DynamicBoard({
                           }}
                           onChange={(columnType, newName) => {
                             const updatedColumns = [...board.columns];
-                            console.log(columnType, newName);
                             updatedColumns[i].type = columnType;
                             updatedColumns[i].name = newName;
                             handleChange({ ...board, columns: updatedColumns });
@@ -289,12 +283,10 @@ export default function DynamicBoard({
                             onClick={() => {
                               const updatedBoard = { ...board };
 
-                              console.log(updatedBoard.incidents[i].data[ic]);
                               if (updatedBoard.incidents[i].data[ic] !== true) {
                                 updatedBoard.incidents[i].data[ic] = true;
                               } else {
                                 updatedBoard.incidents[i].data[ic] = false;
-                                console.log("false");
                               }
                               onUpdate(updatedBoard);
                             }}

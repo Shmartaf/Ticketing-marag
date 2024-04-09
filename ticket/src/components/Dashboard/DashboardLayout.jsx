@@ -7,7 +7,7 @@ export default function DashboardLayout() {
   return (
     <div className="flex gap-5 w-screen max-w-[100vw]">
       <Sidebar />
-      <Outlet /> {/* This is where nested routes will be rendered */}
+      <Outlet />
     </div>
   );
 }

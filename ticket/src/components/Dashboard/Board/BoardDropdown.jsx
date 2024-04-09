@@ -151,7 +151,6 @@ export default function BoardDropdown({
                 id="demo-customized-select"
                 value={color}
                 onChange={(e) => setColor(e.target.value)}
-                // input={<BootstrapInput />}
               >
                 <MenuItem value={"#3B82F6"}>Blue</MenuItem>
                 <MenuItem value={"#22C55E"}>Green</MenuItem>
