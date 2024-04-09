@@ -7,7 +7,7 @@ const notificationRouter = require("../router/notifications");
 const messagingRouter = require("../router/messaging");
 
 
-jest.mock('../data/databse'); // Adjust the path as needed to point to your database.js file
+jest.mock('../data/databse');
 
 const app = express();
 app.use(express.json());
@@ -451,11 +451,9 @@ describe('API Endpoints', () => {
     const response = await request(app).put(`/boards/${id}`).send(newBoardData);
     
     expect(response.statusCode).toBe(200);
-    // Assuming your API response includes the updated board object
     expect(response.body).toMatchObject({
         ...newBoardData,
-        _id: id, // Ensure the ID is included in what you expect back
-        // You might need to adjust this assertion based on the actual response structure
+        _id: id
     });
   });
   it('UPDATE /boards/:id - Not Found', () => {
@@ -588,7 +586,7 @@ describe('API Endpoints', () => {
     ]);
   });
   it('GET /accounts/users/:id - success', async () => {
-    const userId = "65fda85762fb9b8527c7e4bf"; // Use a mock user ID that would have an account associated with it
+    const userId = "65fda85762fb9b8527c7e4bf";
     const mockAccountResponse = [{
       "_id": "65fda85762fb9b8527c7e4bf",
       "account_name": "shenkar2",
@@ -601,7 +599,7 @@ describe('API Endpoints', () => {
     }];
     const response = await request(app).get(`/accounts/users/${userId}`);
     expect(response.statusCode).toBe(200);
-    expect(response.body).toEqual(mockAccountResponse); // Expecting a single account object instead of an array
+    expect(response.body).toEqual(mockAccountResponse);
   });
   
   it('POST /accounts - create account', async () => {
@@ -617,7 +615,7 @@ describe('API Endpoints', () => {
     }
     const response = await request(app).post(`/accounts`).send(newAccountData);
     expect(response.statusCode).toBe(200);
-    expect(response.body).toMatchObject(newAccountData); // Expecting a single account object instead of an array
+    expect(response.body).toMatchObject(newAccountData);
   });
   
   it('GET /notifications - success', async () => {
