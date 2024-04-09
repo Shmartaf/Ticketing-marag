@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Controller = require('../controller');
 const { schemas } = require('../schema/schemas');
-
+const Logger = require('../logger');
+const logger = new Logger('logs/teams.log');
 const controller = new Controller();
 
 /**
@@ -25,8 +26,10 @@ const controller = new Controller();
 router.get('/', async (req, res) => {
     try {
         const teams = await controller.getTeams();
+        logger.logInfo(`Getting all teams ${teams}`);
         res.json(teams);
     } catch (err) {
+        logger.logError(`Error getting all teams ${err}`);
         res.status(500).json({ message: err.message });
     }
 });
@@ -61,8 +64,10 @@ router.get('/:id', async (req, res) => {
         if (!team) {
             return res.status(404).json({ message: 'Team not found' });
         }
+        logger.logInfo(`Getting team by ID ${team}`);
         res.json(team);
     } catch (err) {
+        logger.logError(`Error getting team by ID ${err}`);
         res.status(500).json({ message: err.message });
     }
 });
@@ -93,8 +98,10 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const newTeam = await controller.createTeam(req.body);
+        logger.logInfo(`Creating new team ${newTeam}`);
         res.status(201).json(newTeam);
     } catch (err) {
+        logger.logError(`Error creating new team ${err}`);
         res.status(400).json({ message: err.message });
     }
 });
@@ -106,9 +113,11 @@ async function getTeam(req, res, next) {
         if (!team) {
             return res.status(404).json({ message: 'Team not found' });
         }
+        logger.logInfo(`Getting team by ID ${team}`);
         res.team = team;
         next();
     } catch (err) {
+        logger.logError(`Error getting team by ID ${err}`);
         res.status(500).json({ message: err.message });
     }
 }
@@ -150,8 +159,10 @@ async function getTeam(req, res, next) {
 router.put('/:id', getTeam, async (req, res) => {
     try {
         const updatedTeam = await controller.updateTeam(req.params.id, req.body);
+        logger.logInfo(`Updating team ${updatedTeam}`);
         res.json(updatedTeam);
     } catch (err) {
+        logger.logError(`Error updating team ${err}`);
         res.status(400).json({ message: err.message });
     }
 });
@@ -184,6 +195,7 @@ router.delete('/:id', getTeam, async (req, res) => {
         await controller.deleteTeam(req.params.id);
         res.json({ message: 'Team deleted' });
     } catch (err) {
+        logger.logError(`Error deleting team ${err}`);
         res.status(500).json({ message: err.message });
     }
 });
@@ -210,7 +222,7 @@ router.delete('/:id', getTeam, async (req, res) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Board'
+ *                 $ref: '#/components/schemas/BoardSchema'
  *       500:
  *         description: Internal server error
  */
@@ -218,8 +230,10 @@ router.delete('/:id', getTeam, async (req, res) => {
 router.get('/:id/boards', async (req, res) => {
     try {
         const boards = await controller.getBoardsByTeam(req.params.id);
+        logger.logInfo(`Getting boards by team ID ${boards}`);
         res.json(boards);
     } catch (err) {
+        logger.logError(`Error getting boards by team ID ${err}`);
         res.status(500).json({ message: err.message });
     }
 });
@@ -261,8 +275,10 @@ router.post('/:team_id/user/:id', async (req, res) => {
     console.log(req.params);
     try {
         const user = await controller.addUserToTeam(req.params.team_id, req.params.id);
+        logger.logInfo(`Adding user to team ${user}`);
         res.json(user);
     } catch (err) {
+        logger.logError(`Error adding user to team ${err}`);
         res.status(400).json({ message: err.message });
     }
 }
@@ -289,7 +305,7 @@ router.post('/:team_id/user/:id', async (req, res) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Team'
+ *                 $ref: '#/components/schemas/TeamSchema'
  *       500:
  *         description: Internal server error
  */
@@ -298,8 +314,10 @@ router.post('/:team_id/user/:id', async (req, res) => {
 router.get('/users/:id', async (req, res) => {
     try {
         const user = await controller.getTeamsByUser(req.params.id);
+        logger.logInfo(`Getting teams by user ID ${user}`);
         res.json(user);
     } catch (err) {
+        logger.logError(`Error getting teams by user ID ${err}`);
         res.status(500).json({ message: err.message });
     }
 }

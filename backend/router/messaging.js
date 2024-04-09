@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Controller = require('../controller');
-
+const Logger = require('../logger');
 const controller = new Controller();
+const logger = new Logger('logs/messages.log');
 
 /**
  * @swagger
@@ -25,6 +26,7 @@ const controller = new Controller();
 
 router.get('/', async (req, res) => {
     const accounts = await controller.getMessages();
+    logger.logInfo('Getting all messages ${accounts}');
     res.json(accounts);
 
 });
@@ -57,6 +59,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     const account = await controller.getMessagesByConversation(req.params.id);
+    logger.logInfo('Getting messages by conversation ID ${account}');
     res.json(account);
 });
 
@@ -89,13 +92,14 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     const message = await controller.createMessage(req.body);
     res.json(account);
+    logger.logInfo(`New message created: ${message.name}`);
     const newNotification = {
         message: `New message created: ${message.name}`,
         message_id: message._id,
         date: new Date(),
     };
     const notif = await controller.createNotification(newNotification);
-    console.log(notif);
+    logger.logInfo(`New notification created: ${notif.message}`);
 
 
 });
@@ -125,6 +129,7 @@ router.post('/', async (req, res) => {
  */
 router.delete('/:id', async (req, res) => {
     const message = await controller.deleteMessage(req.params.id);
+    logger.logInfo(`Message deleted: ${message}`);
     res.json(message);
 });
 

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const incidentSchema = new mongoose.Schema(
   {
-    _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+    _id: { type: mongoose.Schema.Types.ObjectId, auto: true, required: false },
   },
   { strict: false }
 );

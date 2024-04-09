@@ -46,10 +46,6 @@ export default function DashboardIndex() {
 
   const onUpdate = (updatedBoard) => {
     console.log("Updating board");
-    // const boards = fetchBoards();
-    // const teams = fetchTeams();
-    // setBoardsData(boards);
-    // setTeams(teams);
     console.log(updatedBoard);
     setBoardsData(updatedBoard);
   };
@@ -92,11 +88,8 @@ export default function DashboardIndex() {
 
   async function createBoard() {
     console.log("trying to create board");
-    debugger;
     await fetchTeams();
     console.log(teams);
-    debugger;
-
     const newBoard = {
       board_name: "New Board",
       team: teams, //
@@ -123,11 +116,12 @@ export default function DashboardIndex() {
       ],
     };
     console.log(newBoard);
+    debugger;
     const res = await post("boards", newBoard);
     console.log(res);
     setBoardsData([...boardsData, newBoard]);
     console.log(boardsData);
-    
+
   }
 
   return user ? (
