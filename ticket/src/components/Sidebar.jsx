@@ -19,7 +19,7 @@ export default function Sidebar() {
   useEffect(() => {
     if (!userData && sessionStorage.getItem("authState") !== null) {
       const test = JSON.parse(sessionStorage.getItem("authState"));
-      console.log(test);
+
       setUserData(test);
       console.log("look like you are authenticated already");
     }
@@ -33,13 +33,8 @@ export default function Sidebar() {
       if (sessionStorage.getItem("authState")) {
         const user = JSON.parse(sessionStorage.getItem("authState"));
         const userAccount = await get(`accounts/users/${user.user.id}`);
-
-
         user.userAccount = userAccount;
-
         setUserData(user);
-        console.log(user);
-        
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -49,13 +44,13 @@ export default function Sidebar() {
   useEffect(() => {
     fetchUserData();
   }, []);
-  console.log(userData);
+
   let accountNames = '';
   if (userData && userData.userAccount) {
     // Map through the array to get all account names
     accountNames = userData.userAccount.map(account => account.account_name).join(', ');
   }
-  console.log(accountNames);
+
   return (
     <div className="bg-slate-50/40 min-w-[280px] h-screen border-r shadow-sm sticky top-0 left-0 bottom-0">
       <div className="sidebar-wrap">
