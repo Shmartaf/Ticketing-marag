@@ -10,6 +10,8 @@ const messagingRouter = require("./router/messaging");
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+const Logger = require("./logger");
+const logger = new Logger("logs/server.log");
 
 // Middleware
 app.use(express.json());
@@ -30,6 +32,6 @@ app.use("/notifications", notificationRouter);
 app.use("/messaging", messagingRouter);
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(8080, () => {
+  logger.logInfo(`Server is running on port ${PORT}`);
 });

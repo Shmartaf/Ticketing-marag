@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Controller = require("../controller");
-
+const Logger = require("../logger");
 const controller = new Controller();
-
+const logger = new Logger("logs/boards.log");
 /**
  * @swagger
  * /boards:
@@ -18,7 +18,7 @@ const controller = new Controller();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Board'
+ *                 $ref: '#/components/schemas/BoardSchema'
  *       500:
  *         description: Internal server error
  */
@@ -27,9 +27,11 @@ const controller = new Controller();
 router.get("/", async (req, res) => {
   try {
     const boards = await controller.getBoards();
+    logger.logInfo(`Getting all boards ${boards}`);
     res.json(boards);
   } catch (err) {
     res.status(500).json({ message: err.message });
+    logger.logError(`Error getting all boards ${err}`);
   }
 });
 
@@ -53,7 +55,7 @@ router.get("/", async (req, res) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Board'
+ *               $ref: '#/components/schemas/BoardSchema'
  *       404:
  *         description: Board not found
  *       500:
@@ -67,8 +69,10 @@ router.get("/:id", async (req, res) => {
     if (!board) {
       return res.status(404).json({ message: "Board not found" });
     }
+    logger.logInfo(`Getting board by ID ${board}`);
     res.json(board);
   } catch (err) {
+    logger.logError(`Error getting board by ID ${err}`);
     res.status(500).json({ message: err.message });
   }
 });
@@ -85,14 +89,14 @@ router.get("/:id", async (req, res) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Board'
+ *             $ref: '#/components/schemas/BoardSchema'
  *     responses:
  *       201:
  *         description: Created board object
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Board'
+ *               $ref: '#/components/schemas/BoardSchema'
  *       400:
  *         description: Bad request
  *       500:
@@ -105,15 +109,17 @@ router.post("/", async (req, res) => {
   try {
     const newBoard = await controller.createBoard(req.body);
     res.status(201).json(newBoard);
-    const newNotification = {
-      message: `New board created: ${newBoard.name}`,
-      board_id: newBoard._id,
-      date: new Date(),
-    };
-    const notif = await controller.createNotification(newNotification);
+    logger.logInfo(`New board created: ${newBoard.board_name}`);
+    // const newNotification = {
+    //   message: `New board created: ${newBoard.name}`,
+    //   board_id: newBoard._id,
+    //   date: new Date(),
+    // };
+    // const notif = await controller.createNotification(newNotification);
 
 
   } catch (err) {
+    logger.logError(`Error creating new board ${err}`);
     res.status(400)
   }
 });
@@ -122,12 +128,14 @@ router.post("/", async (req, res) => {
 async function getBoard(req, res, next) {
   try {
     const board = await controller.getBoardById(req.params.id);
+    logger.logInfo(`Getting board by ID ${board}`);
     if (!board) {
       return res.status(404).json({ message: "Board not found" });
     }
     res.board = board;
     next();
   } catch (err) {
+    logger.logError(`Error getting board by ID ${err}`);
     res.status(500).json({ message: err.message });
   }
 }
@@ -150,14 +158,14 @@ async function getBoard(req, res, next) {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Board'
+ *             $ref: '#/components/schemas/BoardSchema'
  *     responses:
  *       200:
  *         description: Updated board object
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Board'
+ *               $ref: '#/components/schemas/BoardSchema'
  *       400:
  *         description: Bad request
  *       404:
@@ -171,7 +179,8 @@ router.put("/:id", getBoard, async (req, res) => {
   try {
     const updatedBoard = await controller.updateBoard(req.params.id, req.body);
     res.json(updatedBoard);
-    console.log(updatedBoard);
+    logger.logInfo(`Board updated: ${updatedBoard.name}`);
+    // console.log(updatedBoard);
   } catch (err) {
     console.log(err);
     res.status(400).json({ message: err.message });
@@ -208,6 +217,7 @@ router.delete("/:id", getBoard, async (req, res) => {
     await controller.deleteBoard(req.params.id);
     res.json({ message: "Board deleted" });
   } catch (err) {
+    logger.logError(`Error deleting board by ID ${err}`);
     res.status(500).json({ message: err.message });
   }
 });
@@ -234,7 +244,7 @@ router.delete("/:id", getBoard, async (req, res) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Board'
+ *                 $ref: '#/components/schemas/BoardSchema'
  *       500:
  *         description: Internal server error
  */
@@ -243,8 +253,10 @@ router.delete("/:id", getBoard, async (req, res) => {
 router.get("/user/:id", async (req, res) => {
   try {
     const boards = await controller.getBoardsByUser(req.params.id);
+    logger.logInfo(`Getting all boards for user ${req.params.id}`);
     res.json(boards);
   } catch (err) {
+    logger.logError(`Error getting all boards for user ${req.params.id} ${err}`);
     res.status(500).json({ message: err.message });
   }
 });

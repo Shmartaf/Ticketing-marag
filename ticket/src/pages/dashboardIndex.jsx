@@ -42,6 +42,7 @@ export default function DashboardIndex() {
   }
 
   const onUpdate = (updatedBoard) => {
+
     setBoardsData(updatedBoard);
   };
 
@@ -81,6 +82,7 @@ export default function DashboardIndex() {
   async function createBoard() {
 
     await fetchTeams();
+
 
 
     const newBoard = {

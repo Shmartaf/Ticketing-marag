@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Controller = require('../controller');
-
+const Logger = require('../logger');
+const logger = new Logger('logs/accounts.log');
 const controller = new Controller();
 
 /**
@@ -25,6 +26,7 @@ const controller = new Controller();
 
 router.get('/', async (req, res) => {
     const accounts = await controller.getAccounts();
+    logger.logInfo('Getting all accounts ${accounts}');
     res.json(accounts);
 
 });
@@ -58,6 +60,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     const account = await controller.getAccountById(req.params.id);
+    logger.logInfo('Getting account by ID ${account}');
     res.json(account);
 });
 
@@ -127,6 +130,7 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     const account = await controller.updateAccount(req.params.id, req.body);
+    logger.logInfo('Updating account ${account}');
     res.json(account);
 });
 
@@ -154,6 +158,7 @@ router.put('/:id', async (req, res) => {
  */
 router.delete('/:id', async (req, res) => {
     const account = await controller.deleteAccount(req.params.id);
+    logger.logInfo('Deleting account ${account}');
     res.json(account);
 });
 
