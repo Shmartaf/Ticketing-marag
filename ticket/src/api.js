@@ -33,6 +33,7 @@ async function getId(url, id) {
 }
 
 async function post(url, data) {
+    debugger;
     const res = await fetch(`${BASE_URL}/${url}`, {
         method: "POST",
         headers: {

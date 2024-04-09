@@ -109,7 +109,7 @@ router.post("/", async (req, res) => {
   try {
     const newBoard = await controller.createBoard(req.body);
     res.status(201).json(newBoard);
-    logger.logInfo(`New board created: ${newBoard.name}`);
+    logger.logInfo(`New board created: ${newBoard.board_name}`);
     // const newNotification = {
     //   message: `New board created: ${newBoard.name}`,
     //   board_id: newBoard._id,
