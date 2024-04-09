@@ -1,4 +1,8 @@
 
+#Project Editors:
+Or Basker - orbasker@gmail.com
+Barak Daniel - barakk123@gmail.com
+Gal Avital - gal13031993@gmail.com
 # Project Title
 
 Dynamic board and ticket management web application inspired by Monday.com. Built with Node.js, Express, MongoDB, React, and Vite, and integrated with Supabase for authentication.
