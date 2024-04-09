@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const { board, Teams, account, notification, messaging } = require('./models');
 require('dotenv').config();
+const Logger = require('../logger');
+
 
 
 class DBHandler {
@@ -16,6 +18,7 @@ class DBHandler {
         };
         this.url = this.constructConnectionString();
         this.connect();
+        this.logger = new Logger('logs/database.log');
     }
 
     constructConnectionString() {
@@ -30,7 +33,7 @@ class DBHandler {
     async connect() {
         // this.logger.log("Connecting to MongoDB database...");
         await mongoose.connect(this.url);
-        console.log("Connected to MongoDB database.");
+        this.logger.logInfo("Connected to MongoDB database.");
         // this.logger.log("Connected to MongoDB database.");
     }
 
@@ -189,15 +192,11 @@ class DBHandler {
 
     async getBoardsByUser(userId) {
         try {
-            // Find user's teams
             const userTeams = await this.schema.Teams.find({ users: userId });
-            // return userTeams;
-            // Find boards for each team
             const boards_ids = [].concat(...userTeams.map(team => team.boards));
             const boards = await this.schema.board.find({ _id: { $in: boards_ids } });
             return boards;
         } catch (error) {
-            // Handle error
             console.error("Error fetching boards by user:", error);
             throw error;
         }
@@ -221,8 +220,7 @@ class DBHandler {
             const account = await this.schema.account.find({ teams: { $in: team_ids } });
             return account;
         } catch (error) {
-            // Handle error
-            console.error("Error fetching account by user:", error);
+            this.logger.logError(`Error fetching account by user:" ${error}`);
             throw error;
         }
     }

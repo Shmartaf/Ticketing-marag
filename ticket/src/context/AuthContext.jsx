@@ -81,6 +81,10 @@ export const AuthProvider = ({ children }) => {
     }
 
     initialAuthState();
+    if (window.location.pathname !== "/login" && window.location.pathname !== "/register" && window.location.pathname === "https://main.dk5hmwym9ett3.amplifyapp.com/") {
+      if (!authState.isAuthenticated) window.location.pathname = "/login";
+      // if
+    }
   }, []);
 
   const signUp = async ({ email, password, data }) => {
@@ -204,13 +208,14 @@ export const AuthProvider = ({ children }) => {
   const inviteMember = async (email) => {
     try {
       const { data, error } = await supabase.auth.admin.inviteUserByEmail({
-      email: email,
-      data: {
-        // Additional data you want to set for the user
-        username: 'newUsername',
-        role: 'admin',
-        // Add more fields as needed
-      },});
+        email: email,
+        data: {
+          // Additional data you want to set for the user
+          username: 'newUsername',
+          role: 'admin',
+          // Add more fields as needed
+        },
+      });
       if (error) {
         throw error;
       }
