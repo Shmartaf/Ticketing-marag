@@ -8,7 +8,7 @@ import StyledTooltip from "../../assets/StyledTooltip";
 import BoardDropdown from "../Dashboard/Board/BoardDropdown";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import StyledDialog from "../../assets/StyledDialog";
-import { put } from "../../api";
+import { put, deleteRequest } from "../../api";
 import { useAuth } from "../../context/AuthContext";
 
 export default function DynamicBoard({
@@ -96,6 +96,17 @@ export default function DynamicBoard({
     handleChange(updatedBoard);
   };
 
+  const onDelete = (id) => {
+    deleteRequest(`boards/${id}`)
+      .then((res) => {
+        console.log(res);
+        updateFunction(res);
+        return res;
+      })
+      .catch((error) => console.error("Error deleting board:", error));
+  }
+
+
   return (
     <div className="">
       <div className="flex items-center justify-between h-[34px] w-full">
@@ -135,13 +146,13 @@ export default function DynamicBoard({
           )}
           <BoardDropdown
             onRemove={() => {
-              if (onDelete) onDelete();
+              if (onDelete) onDelete(board._id);
             }}
             onNameChange={(newName) => {
-              onUpdate({ ...board, board_name: newName });
+              handleChange({ ...board, board_name: newName });
             }}
             onColorChange={(newColor) => {
-              onUpdate({ ...board, color: newColor });
+              handleChange({ ...board, color: newColor });
             }}
           />
         </div>
@@ -258,7 +269,7 @@ export default function DynamicBoard({
                               const updatedBoard = { ...board };
                               updatedBoard.incidents[i].data[ic] =
                                 e.target.value;
-                              onUpdate(updatedBoard);
+                              onChange(updatedBoard);
                             }}
                             value={new Date(col)}
                             type="date"
@@ -274,7 +285,7 @@ export default function DynamicBoard({
                               const updatedBoard = { ...board };
                               updatedBoard.incidents[i].data[ic] =
                                 e.target.value;
-                              onUpdate(updatedBoard);
+                              handleChange(updatedBoard);
                             }}
                             value={col || 0}
                             type="number"
@@ -484,6 +495,7 @@ export default function DynamicBoard({
 const ColumnDropdown = ({ onRemove, onChange }) => {
   const [open, setOpen] = useState(false);
   const [columnType, setColumnType] = useState("text"); // Default column type
+  const [columnValue, setColumnValue] = useState(""); // Define columnValue state variable
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -511,11 +523,10 @@ const ColumnDropdown = ({ onRemove, onChange }) => {
 
       <ul
         ref={modalRef}
-        className={`${
-          open
-            ? `opacity-100 visible translate-y-0 scale-100`
-            : `opacity-0 invisible scale-95 -translate-y-1`
-        } ul-modal absolute right-0 top-10 bg-white border rounded-xl origin-top-right flex items-center shadow-lg gap-2 px-2.5 py-1.5 transition-all duration-200`}
+        className={`${open
+          ? `opacity-100 visible translate-y-0 scale-100`
+          : `opacity-0 invisible scale-95 -translate-y-1`
+          } ul-modal absolute right-0 top-10 bg-white border rounded-xl origin-top-right flex items-center shadow-lg gap-2 px-2.5 py-1.5 transition-all duration-200`}
       >
         <li
           onClick={() => {
@@ -544,7 +555,7 @@ const ColumnDropdown = ({ onRemove, onChange }) => {
         <Divider orientation="vertical" flexItem />
 
         <StyledDialog
-          onClose={() => {}}
+          onClose={() => { }}
           button={
             <li className="flex items-center gap-1 text-sm cursor-pointer hover:text-blue-500 transition-all duration-200">
               <svg
@@ -568,10 +579,12 @@ const ColumnDropdown = ({ onRemove, onChange }) => {
             <div className="mt-2">
               <input
                 id="col-name"
-                value={"Column Name"}
+                value={columnValue}
                 placeholder="Column's name"
                 className="border-[1.5px] mt-1.5 mb-4 border-gray-300 text-[17px] px-3.5 py-2 rounded-xl shadow-sm w-full"
+                onChange={(e) => setColumnValue(e.target.value)} // Update columnValue state
               />
+
               <Select
                 value={columnType}
                 onChange={(e) => setColumnType(e.target.value)}
@@ -591,10 +604,13 @@ const ColumnDropdown = ({ onRemove, onChange }) => {
               onClick={(e) => {
                 const inputElement = document.getElementById("col-name");
                 if (inputElement instanceof HTMLInputElement) {
-                  if (inputElement.value.length == 0) {
+                  if (inputElement.value.trim() === "") { // Check if input is empty after trimming whitespace
                     e.stopPropagation();
                     e.preventDefault();
-                  } else onChange(columnType, inputElement.value);
+                  } else {
+                    onChange(columnType, inputElement.value);
+                    // Close the modal here if needed
+                  }
                 }
               }}
               className="text-white font-medium py-[7px] mt-1 bg-gradient-to-t from-[#467ae9] to-blue-500 border border-black/10 text-[15px]"

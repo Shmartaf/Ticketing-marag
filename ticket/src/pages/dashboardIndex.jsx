@@ -116,7 +116,6 @@ export default function DashboardIndex() {
       ],
     };
     console.log(newBoard);
-    debugger;
     const res = await post("boards", newBoard);
     console.log(res);
     setBoardsData([...boardsData, newBoard]);
