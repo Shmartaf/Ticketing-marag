@@ -17,7 +17,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const initialAuthState = async () => {
       try {
-        const { data: userData, error: userError } = await supabase.auth.getUser();
+        const { data: userData, error: userError } =
+          await supabase.auth.getUser();
         const session = supabase.auth.session;
 
         if (userError) {
@@ -30,11 +31,12 @@ export const AuthProvider = ({ children }) => {
 
         if (!!userData && !!session) {
           // Fetch additional user data
-          const { data: userDataFromSupabase, error: userDataError } = await supabase
-            .from("users")
-            .select("phone", "role")
-            .eq("id", userData.id)
-            .single();
+          const { data: userDataFromSupabase, error: userDataError } =
+            await supabase
+              .from("users")
+              .select("phone", "role")
+              .eq("id", userData.id)
+              .single();
 
           if (userDataError) {
             throw userDataError;
@@ -63,9 +65,7 @@ export const AuthProvider = ({ children }) => {
         });
       }
     };
-    console.log("arrived here")
-    console.log(sessionStorage.getItem("authState"));
-    console.log(sessionStorage.getItem("token"));
+
     if (sessionStorage.getItem("authState")) {
       const session = sessionStorage.getItem("token");
       const user = sessionStorage.getItem("authState");
@@ -76,13 +76,9 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: true,
         role: user.role,
       });
-      console.log(session);
-      console.log(user);
+
       return;
     }
-
-
-
 
     initialAuthState();
   }, []);
@@ -111,7 +107,10 @@ export const AuthProvider = ({ children }) => {
 
   const login = async ({ email, password }) => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
       if (error) {
         throw error;
@@ -150,7 +149,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-
   const updateUser = async (id, data) => {
     try {
       const response = await supabase.auth.updateUser({ id, data });
@@ -162,7 +160,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Error updating user", error);
       throw error;
     }
-  }
+  };
 
   const logout = async () => {
     try {
@@ -172,7 +170,7 @@ export const AuthProvider = ({ children }) => {
         session: null,
         loading: false,
         isAuthenticated: false,
-        role: "guest"
+        role: "guest",
       });
     } catch (error) {
       console.error("Logout failed", error);
@@ -181,7 +179,11 @@ export const AuthProvider = ({ children }) => {
   };
   const fetchUser = async (id) => {
     try {
-      const data = await supabase.from("users").select("*").eq("id", id).single();
+      const data = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", id)
+        .single();
       console.log(data);
       if (data.error) {
         throw data.error;
@@ -207,7 +209,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ ...authState, login, logout, signUp, fetchUser, updateUser, inviteMember }}>
+    <AuthContext.Provider
+      value={{
+        ...authState,
+        login,
+        logout,
+        signUp,
+        fetchUser,
+        updateUser,
+        inviteMember,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

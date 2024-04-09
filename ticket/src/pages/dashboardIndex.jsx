@@ -10,7 +10,6 @@ import { get, post, put, deleteRequest, BASE_URL } from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useData } from "../context/DataContext";
 
-
 export default function DashboardIndex() {
   // console.log(boardsData);
   const [teamsData, setTeamsData] = useState([]);
@@ -24,12 +23,11 @@ export default function DashboardIndex() {
   const [error, setError] = useState(null);
   const [userData, setUserData] = useState(null);
 
-
   async function fetchBoards() {
-    console.log(userData);
     if (!userData) {
       return;
     }
+
     const data = await get(`boards/user/${userData.user.id}`);
     console.log(data);
     setBoardsData(data);
@@ -92,11 +90,6 @@ export default function DashboardIndex() {
     }
   }, [userData]); // Only execute when userData changes
 
-
-
-
-
-
   async function createBoard() {
     console.log("trying to create board");
     const newBoard = {
@@ -121,35 +114,14 @@ export default function DashboardIndex() {
         {
           name: "number",
           type: "number",
-        }
+        },
       ],
     };
-    console.log(newBoard);
+
     const res = await post("boards", newBoard);
-    console.log(res);
+
     setBoardsData([...boardsData, newBoard]);
-    console.log(boardsData);
   }
-
-  async function updateBoards(index) {
-    console.log(index);
-    const res = await fetch(
-      `http://localhost:5005/boards/${boardsData[index]._id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(boardsData),
-      }
-    );
-
-    console.log(res);
-    const data = await put(`boards/${boardsData[index]._id}`, boardsData[index]);
-    console.log(data);
-  }
-
-
 
   return user ? (
     <div className="dashboard-viewer overflow-hidden overscroll-none">
@@ -202,11 +174,7 @@ export default function DashboardIndex() {
 
       <div className="mt-14 grid grid-cols-1 gap-14">
         {filteredBoards.map((board, i) => (
-          <DynamicBoard
-            board={board}
-            key={i}
-            updateFunction={onUpdate}
-          />
+          <DynamicBoard board={board} key={i} updateFunction={onUpdate} />
         ))}
 
         {filteredBoards.length === 0 && (
@@ -215,5 +183,4 @@ export default function DashboardIndex() {
       </div>
     </div>
   ) : null;
-
 }

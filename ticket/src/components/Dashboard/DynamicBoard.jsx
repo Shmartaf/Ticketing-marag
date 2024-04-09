@@ -1,10 +1,7 @@
+/* eslint-disable no-undef */
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import {
-  Avatar,
-  Divider,
-  MenuItem,
-  Select,
-} from "@mui/material";
+import { Avatar, Divider, MenuItem, Select } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import StyledCheckbox from "../../assets/StyledCheckbox";
 import StyledTooltip from "../../assets/StyledTooltip";
@@ -12,11 +9,21 @@ import BoardDropdown from "../Dashboard/Board/BoardDropdown";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import StyledDialog from "../../assets/StyledDialog";
 import { put } from "../../api";
+import { useAuth } from "../../context/AuthContext";
 
 export default function DynamicBoard({
   board,
   updateFunction,
 }) {
+  const { user } = useAuth();
+  let userData;
+  try {
+    userData = JSON.parse(user);
+    console.log(userData);
+  } catch (error) {
+    userData = {};
+  }
+
   const [selected, setSelected] = useState([]);
   const handleChange = (updatedBoard) => {
     console.log(updatedBoard);
@@ -38,13 +45,14 @@ export default function DynamicBoard({
         alert("You do not have permission to delete rows");
       } else {
         const updatedBoard = { ...board };
-        const newRows = board.incidents.filter((_, index) => !selected.includes(index));
+        const newRows = board.incidents.filter(
+          (_, index) => !selected.includes(index)
+        );
         updatedBoard.incidents = newRows;
         handleChange(updatedBoard);
         setSelected([]);
       }
     }
-
   };
 
   const onAddRow = () => {
@@ -57,16 +65,22 @@ export default function DynamicBoard({
   };
 
   const handleColumnChange = (index, columnType, newName) => {
-    const updatedColumns = [...board.columns];
-    updatedColumns[index] = { ...updatedColumns[index], type: columnType, name: newName };
+    board.columns;
+
+    board.columns[index] = {
+      ...board.columns[index],
+      type: columnType,
+      name: newName,
+    };
+
     board.incidents.map((row, i) => {
       if (row.data.length < updatedColumns.length) {
-        const updatedBoard = { ...board };
-        updatedBoard.incidents[i].data.push("");
-        handleChange(updatedBoard);
+        // const updatedBoard = { ...board };
+        board.incidents[i].data.push("");
       }
     });
-    // handleChange({ ...board, columns: updatedColumns });
+
+    handleChange(board);
   };
 
   const onRemoveColumn = (index) => {
@@ -77,7 +91,8 @@ export default function DynamicBoard({
 
   const handleCompleteToggle = (index) => {
     const updatedBoard = { ...board };
-    updatedBoard.incidents[index].complete = !updatedBoard.incidents[index].complete;
+    updatedBoard.incidents[index].complete =
+      !updatedBoard.incidents[index].complete;
     handleChange(updatedBoard);
   };
 
@@ -163,9 +178,7 @@ export default function DynamicBoard({
                                 updatedBoard.incidents[index].data.push("");
                                 handleChange(updatedBoard);
                               }
-                            }
-                            );
-
+                            });
                           }}
                           key={i}
                         />
@@ -179,7 +192,11 @@ export default function DynamicBoard({
                 <th
                   className="cursor-pointer"
                   onClick={() => {
-                    handleColumnChange(board.columns.length, "text", "New Column");
+                    handleColumnChange(
+                      board.columns.length,
+                      "text",
+                      "New Column"
+                    );
                   }}
                 >
                   <StyledTooltip title="Add new column">
@@ -218,7 +235,6 @@ export default function DynamicBoard({
                     />
                   </td>
                   {row.data.map((col, ic) => (
-
                     <td key={ic} className="px-1">
                       {board.columns[ic] &&
                         board.columns[ic].type == "text" && (
@@ -304,22 +320,106 @@ export default function DynamicBoard({
                       title={"Task's Logs"}
                       model={
                         <div className="mt-4">
-                          <div className="flex gap-2.5">
+                          {row.messages ? (
+                            row.messages.length > 0 ? (
+                              <div className="grid grid-cols-1 gap-4">
+                                {row.messages.map((message, mi) => (
+                                  <div
+                                    data-mine={
+                                      message.userid == userData.user.id
+                                    }
+                                    dir={
+                                      message.userid == userData.user.id
+                                        ? "rtl"
+                                        : "ltr"
+                                    }
+                                    key={mi}
+                                    className="flex items-center gap-2.5 group"
+                                  >
+                                    <Avatar sx={{ height: 30, width: 30 }} />
+                                    <div className="flex items-center gap-1">
+                                      {message.userid !== userData.user.id && (
+                                        <p className="font-medium">
+                                          {message.name}:
+                                        </p>
+                                      )}
+
+                                      <p className="opacity-80">
+                                        {message.message}
+                                      </p>
+                                    </div>{" "}
+                                    <p className="text-sm font-medium transition-all group-hover:opacity-70 opacity-0">
+                                      {new Date(message.date).toLocaleString(
+                                        "en-US",
+                                        {
+                                          day: "numeric",
+                                          month: "long",
+                                          hour: "numeric",
+                                          minute: "numeric",
+                                        }
+                                      )}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="text-center py-5">
+                                No messages yet.
+                              </p>
+                            )
+                          ) : (
+                            <p className="text-center py-5">No messages yet.</p>
+                          )}
+                          {/* <div className="flex gap-2.5">
                             <Avatar sx={{ height: 30, width: 30 }} />
                             <div>
                               <p className="font-medium">User Name</p>
                               <p className="opacity-80">Comment...</p>
                             </div>
-                          </div>
+                          </div> */}
 
-                          <div className="grid grid-cols-[5fr_1fr] items-center gap-2 mt-5">
+                          <form
+                            onSubmit={(e) => {
+                              e.preventDefault();
+
+                              const messageValue =
+                                e.target.elements.message.value;
+
+                              const updatedBoard = { ...board };
+
+                              const messgaeObject = {
+                                message: messageValue,
+                                userid: userData.user.id,
+                                name: userData.user.user_metadata.full_name,
+                                date: new Date(),
+                              };
+
+                              if (!updatedBoard.incidents[i].messages) {
+                                updatedBoard.incidents[i].messages = [];
+                              }
+
+                              updatedBoard.incidents[i].messages = [
+                                ...updatedBoard.incidents[i].messages,
+                                messgaeObject,
+                              ];
+
+                              handleChange(updatedBoard);
+
+                              e.target.elements.message.value = "";
+                            }}
+                            className="grid grid-cols-[5fr_1fr] items-center gap-2 mt-5"
+                          >
                             <input
-                              value={"Message..."}
                               placeholder="Message"
                               rows={1}
+                              required
+                              name="message"
                               className="border border-gray-300 text-[15px] px-3.5 py-2 rounded-lg shadow-sm w-full"
                             />
-                            <button className="bg-blue-500 py-3 text-white flex items-center justify-center">
+                            <button
+                              type="submit"
+                              className="bg-blue-500 py-[11.25px] text-white flex items-center justify-center"
+                            >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -329,7 +429,7 @@ export default function DynamicBoard({
                                 <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
                               </svg>
                             </button>
-                          </div>
+                          </form>
                         </div>
                       }
                       button={
@@ -411,11 +511,11 @@ const ColumnDropdown = ({ onRemove, onChange }) => {
 
       <ul
         ref={modalRef}
-
-        className={`${open
-          ? `opacity-100 visible translate-y-0 scale-100`
-          : `opacity-0 invisible scale-95 -translate-y-1`
-          } ul-modal absolute right-0 top-10 bg-white border rounded-xl origin-top-right flex items-center shadow-lg gap-2 px-2.5 py-1.5 transition-all duration-200`}
+        className={`${
+          open
+            ? `opacity-100 visible translate-y-0 scale-100`
+            : `opacity-0 invisible scale-95 -translate-y-1`
+        } ul-modal absolute right-0 top-10 bg-white border rounded-xl origin-top-right flex items-center shadow-lg gap-2 px-2.5 py-1.5 transition-all duration-200`}
       >
         <li
           onClick={() => {
@@ -444,7 +544,7 @@ const ColumnDropdown = ({ onRemove, onChange }) => {
         <Divider orientation="vertical" flexItem />
 
         <StyledDialog
-          onClose={() => { }}
+          onClose={() => {}}
           button={
             <li className="flex items-center gap-1 text-sm cursor-pointer hover:text-blue-500 transition-all duration-200">
               <svg

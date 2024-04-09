@@ -19,17 +19,15 @@ export default function Register() {
   const SignUp = async (e) => {
     e.preventDefault();
     const res = await signUp({
-      email, password,
-      data:
-        { full_name: name, email: email, userType: userType }
+      email,
+      password,
+      data: { full_name: name, email: email, userType: userType },
     });
     console.log(res);
     Navigate("/login");
 
-
     alert("Check your email for the confirmation link");
-  }
-
+  };
 
   return (
     <div className="bg-slate-100 flex items-center justify-center w-screen h-screen">
@@ -47,9 +45,7 @@ export default function Register() {
           </a>
         </p>
 
-        <form className="mt-4"
-          onSubmit={SignUp}
-        >
+        <form className="mt-4" onSubmit={SignUp}>
           <label htmlFor="name" className="text-gray-500">
             Full Name <span className="text-red-500">*</span>
           </label>
@@ -78,10 +74,10 @@ export default function Register() {
             type={viewPassword ? "text" : "password"}
             placeholder="••••••••"
             value={password}
-            className="border-[1.5px] mt-1.5 border-gray-300 text-[17px] px-3.5 py-2 rounded-xl shadow-sm w-full"
+            className="border-[1.5px] mt-1.5 mb-3 border-gray-300 text-[17px] px-3.5 py-2 rounded-xl shadow-sm w-full"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <label htmlFor="userType" className="text-gray-500">
+          <label htmlFor="userType" className="text-gray-500 mt-4">
             User Type <span className="text-red-500">*</span>
           </label>
           <select
@@ -98,7 +94,6 @@ export default function Register() {
           <button
             type="submit"
             className="w-full text-white font-semibold py-2 mt-4 bg-gradient-to-t from-blue-600 to-blue-500 border border-black/10"
-
           >
             Register
           </button>
