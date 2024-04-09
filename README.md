@@ -75,7 +75,7 @@ If you're interested in running the project locally or contributing, follow thes
 
 If you're just looking to explore, visit our live demo:
 
-- Frontend UI: [Boards](https://main.dk5hmwym9ett3.amplifyapp.com/)
+- Frontend UI: [Boards](https://main--crismanagment.netlify.app/)
 - Swagger UI documentation: [Docs](https://ticketing-marag.onrender.com/docs)
 
 ## Usage
