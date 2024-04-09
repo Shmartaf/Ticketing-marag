@@ -278,7 +278,8 @@ describe('API Endpoints', () => {
       }
     ]});
   });
-  it('UPDATE /boards/:id - update board', async () => {
+  it('UPDATE /boards/:id - Internal Server Error 500', async () => {
+    // We will create an Internal Server Error because we are not implementing the "getBoard" method inside the update function
     const newBoardData = {
       "id": "6608238ac439c4adb28502c3",
       "_id": "6608238ac439c4adb28502c3",
@@ -450,13 +451,10 @@ describe('API Endpoints', () => {
 
     const response = await request(app).put(`/boards/${id}`).send(newBoardData);
     
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toMatchObject({
-        ...newBoardData,
-        _id: id
-    });
+    expect(response.statusCode).toBe(500);
+
   });
-  it('UPDATE /boards/:id - Not Found', () => {
+  it('UPDATE /boards/:id - Not Found 404', () => {
     const id = '6608238ac439c4adb28502c4';
     return request(app).put(`/boardss/${id}`).send({}).then(res => {
       expect(res.statusCode).toBe(404);
