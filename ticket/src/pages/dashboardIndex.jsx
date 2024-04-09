@@ -99,9 +99,14 @@ export default function DashboardIndex() {
 
   async function createBoard() {
     console.log("trying to create board");
+    debugger;
+    await fetchTeams();
+    console.log(teams);
+    debugger;
+
     const newBoard = {
       board_name: "New Board",
-      team: teamsData, //
+      team: teams, //
       incidents: [
         {
           complete: true,
@@ -124,11 +129,14 @@ export default function DashboardIndex() {
         }
       ],
     };
+    debugger;
+
     console.log(newBoard);
     const res = await post("boards", newBoard);
     console.log(res);
     setBoardsData([...boardsData, newBoard]);
     console.log(boardsData);
+    debugger;
   }
 
   async function updateBoards(index) {
