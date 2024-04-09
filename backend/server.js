@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const swaggerDocs = require("./utils/swagger"); // Import swaggerDocs function
+const swaggerDocs = require("./utils/swagger");
 // Routes
 const boardRouter = require("./router/boards");
 const teamRouter = require("./router/Teams");
@@ -20,7 +20,7 @@ app.use(cors());
 // Swagger documentation
 swaggerDocs(app, PORT); // Pass app and PORT to swaggerDocs function
 
-// Your API routes
+// API routes
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });

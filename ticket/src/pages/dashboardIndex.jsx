@@ -11,7 +11,6 @@ import { useAuth } from "../context/AuthContext";
 import { useData } from "../context/DataContext";
 
 export default function DashboardIndex() {
-  // console.log(boardsData);
   const [teamsData, setTeamsData] = useState([]);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(0);
@@ -29,7 +28,6 @@ export default function DashboardIndex() {
     }
 
     const data = await get(`boards/user/${userData.user.id}`);
-    console.log(data);
     setBoardsData(data);
     setLoading(false);
   }
@@ -39,14 +37,12 @@ export default function DashboardIndex() {
       return;
     }
     const data = await get(`teams/users/${userData.user.id}`);
-    console.log(data);
     setTeams(data);
     setLoading(false);
   }
 
   const onUpdate = (updatedBoard) => {
-    console.log("Updating board");
-    console.log(updatedBoard);
+
     setBoardsData(updatedBoard);
   };
 
@@ -67,32 +63,31 @@ export default function DashboardIndex() {
         });
       setFilteredBoards(filteredBoards);
     }
-  }, [boardsData, search, sort, userData]); // Add userData to the dependencies array
+  }, [boardsData, search, sort, userData]); 
 
   useEffect(() => {
     if (!userData && sessionStorage.getItem("authState") !== null) {
       const test = JSON.parse(sessionStorage.getItem("authState"));
-      console.log(test);
-      console.log(test); // You will see the updated value here
       setUserData(test);
-      console.log("look like you are authenticated already");
     }
-  }, [userData]); // Add userData to the dependencies array
+  }, [userData]); 
 
   useEffect(() => {
     if (userData) {
       fetchBoards();
       fetchTeams();
     }
-  }, [userData]); // Only execute when userData changes
+  }, [userData]);
 
   async function createBoard() {
-    console.log("trying to create board");
+
     await fetchTeams();
-    console.log(teams);
+
+
+
     const newBoard = {
       board_name: "New Board",
-      team: teams, //
+      team: teams,
       incidents: [
         {
           complete: true,
@@ -115,13 +110,8 @@ export default function DashboardIndex() {
         },
       ],
     };
-    console.log(newBoard);
     const res = await post("boards", newBoard);
-    console.log(res);
-    debugger;
-    setBoardsData([...boardsData, newBoard]);
-    console.log(boardsData);
-
+    setBoardsData([...boardsData, newBoard]);    
   }
 
   return user ? (

@@ -19,7 +19,7 @@ const board = {
 export default function BoardPage() {
   const [boardData, setBoardData] = useState<any>([]);
 
-  let { id } = useParams(); // Use this to query results based on board's id
+  let { id } = useParams();
 
   async function getBoard() {
     const res = await fetch(`http://localhost:5005/boards/${id}`, {
@@ -55,7 +55,7 @@ export default function BoardPage() {
             setBoardData((prev) => {
               const updatedBoard = { ...prev };
               updatedBoard.columns.push({
-                name: `Column ${updatedBoard.columns.length + 1}`, // Update to use updatedBoard instead of board
+                name: `Column ${updatedBoard.columns.length + 1}`,
                 type: "text",
               });
 

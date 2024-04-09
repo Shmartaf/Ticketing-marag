@@ -17,10 +17,8 @@ export default function SettingsPage() {
   const { fetchUser, updateUser, inviteMember, signUp } = useAuth();
 
   const handleInviteMemberClick = () => {
-    console.log("Inviting member:", invitedMember);
     inviteMember("barakk123@gmail.com");
 
-    // Call your inviteMemberToTeam function here if needed
   };
 
   const fetchUserInfo = async (userId) => {
@@ -33,37 +31,18 @@ export default function SettingsPage() {
   };
 
   const inviteMemberToTeam = async () => {
-    // try {
-    //   if (invitedMember.email) {
-    //     const response = await inviteMember(invitedMember.email);
-    //     console.log(response);
-    //     const assignToTeam = await post(`teams/${userData.userTeams[0].id}/users/${response.id}`);
-    //     console.log(assignToTeam);
-    //   }
-    // } catch (error) {
-    //   console.error("Error inviting member:", error);
-    // }
     try {
       if (invitedMember.email && invitedMember.name && invitedMember.role) {
         const response = await signUp(invitedMember.email, invitedMember.name, invitedMember.role);
-        console.log(response);
       }
       const new_user = signUp(invitedMember.email, "123456", { full_name: invitedMember.name, userType: invitedMember.role });
-      console.log(new_user);
       const assignToTeam = await post(`teams/${userData.userTeams[0].id}/users/${new_user.id}`);
-      console.log(assignToTeam);
     }
     catch (error) {
       console.error("Error inviting member:", error);
 
     }
   }
-
-
-
-
-
-
 
   const fetchUserData = async () => {
     try {
@@ -110,7 +89,6 @@ export default function SettingsPage() {
             Your Team
           </h5>
 
-          {/* Add visibility condition */}
           <StyledDialog
             onClose={() => setInviteMember({ name: "", email: "", role: 0 })}
             button={
@@ -216,9 +194,6 @@ export default function SettingsPage() {
                 <div className="flex items-center gap-2.5">
                   <Avatar sx={{ height: 30, width: 30 }} />
                   <p className="font-medium">
-                    {console.log(member)}
-                    {console.log(member.raw_user_meta_data)}
-                    {console.log(userData)}
                     {member.raw_user_meta_data.full_name}{" "}
                     {member.id === userData.user.id ?
                       <span className="font-normal">(You)</span>
@@ -229,8 +204,6 @@ export default function SettingsPage() {
                 </div>
 
                 <p className="font-medium mt-1">{member.raw_user_meta_data.userType}</p>
-
-                {/* Add visibility condition */}
 
                 <div className="flex items-center gap-2.5">
                   <StyledDialog
@@ -281,34 +254,20 @@ export default function SettingsPage() {
                     closeTrigger={
                       <button
                         onClick={async () => {
-                          console.log(updateRole);
-                          let roleLabel = ""; // For storing the role label
-
-                          // Check if a role is selected
-                          
-                            // Assuming roles are defined like this elsewhere in your component
+                          let roleLabel = "";
                           const roles = [
                             { value: 0, label: "Super Admin" },
                             { value: 1, label: "Team Admin" },
                             { value: 2, label: "Team Member" },
                           ];
                             
-                            // Find the role label based on selected value
                           const selectedRole = roles.find(role => role.value === updateRole);
                           if (selectedRole) roleLabel = selectedRole.label;
-                            console.log(roleLabel);
-                            console.log(JSON.stringify(member));
-                            console.log(`member.id: ${member.id}`);
                             
                             member.raw_user_meta_data.userType = roleLabel;
                             const memberData = {
                               userType: member.raw_user_meta_data.userType
                             }
-                            console.log(`member type: ${member.raw_user_meta_data.userType}`);
-                            //const result = await inviteMember("orbasker@gmail.com");
-                            //console.log(result);
-                            // Reset the selection (if needed)
-                            // setUpdateRole(0); // Uncomment if you want to reset the role selector after selection
                         }}
                         className="text-white font-medium py-[7px] mt-1 bg-gradient-to-t from-[#467ae9] to-blue-500 border border-black/10 text-[15px]"
                       >

@@ -6,13 +6,12 @@ export default function Sidebar() {
   const { logout} = useAuth();
 
   const handleLogout = async (event) => {
-    event.preventDefault(); // מונעת את ההתנהגות הדיפולטיבית של הקישור
+    event.preventDefault();
     try {
-      await logout(); // קוראת לפונקציה logout מ-useAuth
+      await logout();
       window.location.href = "/";
     } catch (error) {
       console.error('Failed to logout', error);
-      // טיפול בשגיאה, למשל הצגת הודעה למשתמש
     }
   };
   const [userData, setUserData] = useState(null);
@@ -21,9 +20,8 @@ export default function Sidebar() {
       const test = JSON.parse(sessionStorage.getItem("authState"));
 
       setUserData(test);
-      console.log("look like you are authenticated already");
     }
-  }, [userData]); // Add userData to the dependencies array
+  }, [userData]);
   const userName = userData?.user?.user_metadata?.full_name || "Guest";
 
 
@@ -47,7 +45,6 @@ export default function Sidebar() {
 
   let accountNames = '';
   if (userData && userData.userAccount) {
-    // Map through the array to get all account names
     accountNames = userData.userAccount.map(account => account.account_name).join(', ');
   }
 
@@ -175,53 +172,3 @@ export default function Sidebar() {
     </div>
   );
 }
-
-// const BoardBullet = ({ board }: { board: any }) => {
-//   const [expandView, setExpandView] = useState(false);
-//   return (
-//     <div>
-//       {" "}
-//       <a
-//         href="#"
-//         onClick={() => setExpandView(!expandView)}
-//         className="sidebar-board-button text-blue-500"
-//       >
-//         <svg
-//           xmlns="http://www.w3.org/2000/svg"
-//           viewBox="0 0 24 24"
-//           fill="currentColor"
-//         >
-//           <path
-//             fillRule="evenodd"
-//             d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
-//             clipRule="evenodd"
-//           />
-//         </svg>
-//         {board.name}
-//       </a>{" "}
-//       {expandView && (
-//         <div className="ml-5 grid grid-cols-1 gap-2.5">
-//           {board.inner.map((inner, i) => (
-//             <a href="#" className="sidebar-button">
-//               <svg
-//                 xmlns="http://www.w3.org/2000/svg"
-//                 fill="none"
-//                 viewBox="0 0 24 24"
-//                 strokeWidth={2}
-//                 stroke="currentColor"
-//                 className="w-5"
-//               >
-//                 <path
-//                   strokeLinecap="round"
-//                   strokeLinejoin="round"
-//                   d="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125C3.504 4.5 3 5.004 3 5.625v12.75c0 .621.504 1.125 1.125 1.125Z"
-//                 />
-//               </svg>
-//               {inner.name}
-//             </a>
-//           ))}
-//         </div>
-//       )}
-//     </div>
-//   );
-// };

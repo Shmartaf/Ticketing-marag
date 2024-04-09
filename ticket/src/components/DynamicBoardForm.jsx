@@ -52,8 +52,6 @@ const DynamicBoardForm = (onCreateBoard) => {
       }
     });
 
-    // TODO: check if this details are needed
-    // TODO: use AUthContext to get the username and board_id
     const board = {
       username: "admin",
       board_id: "1",

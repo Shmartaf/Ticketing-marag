@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, IconButton, Paper, Button, TextField, Checkbox, Modal, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import MessageBlock from './MessageBlock'; // Import the MessageBlock component
+import MessageBlock from './MessageBlock';
 
 const DynamicTable = ({ board }) => {
     const [newIncident, setNewIncident] = useState({});
-    const [selectedIncident, setSelectedIncident] = useState(null); // State to hold selected incident
-    const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
-    console.log(board);
-    // Check if the board object is defined
+    const [selectedIncident, setSelectedIncident] = useState(null); 
+    const [isModalOpen, setIsModalOpen] = useState(false);
     if (!board) {
         return <div>No board data available</div>;
     }
@@ -135,7 +133,6 @@ const DynamicTable = ({ board }) => {
                         Incident Details
                     </Typography>
                     <Typography variant="body1" id="modal-description">
-                        {/* Render selected incident details */}
                         {selectedIncident && (
                             <div>
                                 {Object.keys(selectedIncident).map(key => (
@@ -143,7 +140,6 @@ const DynamicTable = ({ board }) => {
                                         <strong>{key}: </strong>{selectedIncident[key]}
                                     </div>
                                 ))}
-                                {/* Render message block component */}
                                 <MessageBlock />
                             </div>
                         )}

@@ -19,7 +19,7 @@ const DynamicForm = (board) => {
 
   // Initial data for the form
   const initialData = incidents.reduce((data, incident) => {
-    data[incident.title] = incident; // Assuming the incident title is unique
+    data[incident.title] = incident;
     return data;
   }, {});
 

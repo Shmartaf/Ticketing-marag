@@ -49,7 +49,6 @@ class DBHandler {
 
     async createBoard(board) {
         const newBoard = this.schema.board.create(board);
-        // await newBoard.save();
         return newBoard;
     }
 
@@ -207,7 +206,6 @@ class DBHandler {
             const teams = await this.schema.Teams.find({ users: userId });
             return teams;
         } catch (error) {
-            // Handle error
             console.error("Error fetching teams by user:", error);
             throw error;
         }

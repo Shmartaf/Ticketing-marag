@@ -41,7 +41,7 @@ export const DataProvider = ({ children }) => {
         if (user) {
             fetchData();
         }
-    }, [user]); // Call fetchData whenever user changes
+    }, [user]);
 
     return (
         <DataContext.Provider value={{ boards, teams, fetchData }}>

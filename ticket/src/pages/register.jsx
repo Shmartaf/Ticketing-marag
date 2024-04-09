@@ -16,21 +16,18 @@ export default function Register() {
 
 
   useEffect(() => {
-    // Fetch teams and accounts data from your endpoints
     fetchTeams();
     fetchAccounts();
   }, []);
 
   const fetchTeams = async () => {
     const response = await get("teams");
-    console.log(response);
     setTeams(response);
   };
 
   const fetchAccounts = async () => {
 
     const response = await get("accounts");
-    console.log(response);
     setAccounts(response);
   };
 
@@ -43,22 +40,13 @@ export default function Register() {
     const userType = e.target.userType.value;
     const teams = e.target.team.value;
     const accounts = e.target.account.value;
-    console.log(email, name, password, userType, teams, accounts);
     const res = await signUp({
       email,
       password,
       data: { full_name: name, email: email, userType: userType, team: teams, account: accounts },
     });
 
-    console.log(res);
-    // add the user to the team
-    console.log(res.data.user);
-    console.log(teams);
-    // const team = teams.find((team) => team._id === teams);
-    // console.log(team);
-    debugger
     const new_member = await post(`teams/${teams}/user/${res.data.user.id}`);
-    console.log(new_member);
     Navigate("/login");
     alert("Check your email for the confirmation link");
   };
