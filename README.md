@@ -78,18 +78,17 @@ If you're just looking to explore, visit our live demo:
 
 The backend is deployed on Render, and the frontend is available on AWS Netlify. Navigate to the Frontend UI link provided above to start exploring the application. The Swagger UI documentation can be accessed for detailed API endpoints information and testing.
 
-users example: 
-gal@gal.com - admin team 1
-shai@shai.com - team member
+### users example:
+- gal@gal.com - admin team 1
+- shai@shai.com - team member
 
-admin-b@gmail.com - admin team 2
-shlomi@shlomi.com - team member
+- admin-b@gmail.com - admin team 2
+- shlomi@shlomi.com - team member
 
-password all user : 123456
-
+#### password all user : 123456
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.txt) file for details.
 
 ## Contact
 
