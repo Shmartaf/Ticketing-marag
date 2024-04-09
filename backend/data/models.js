@@ -7,6 +7,8 @@ const incidentSchema = new mongoose.Schema(
   { strict: false }
 );
 
+
+
 const boardSchema = new mongoose.Schema({
   _id: { type: mongoose.Schema.Types.ObjectId, auto: true, required: false },
   account_id: { type: String, required: false },
@@ -14,7 +16,7 @@ const boardSchema = new mongoose.Schema({
   username: { type: String, required: false },
   board_name: { type: String, required: true },
   users: [{ type: String, required: false }],
-  team: { type: String, required: true },
+  team: { type: Object, required: true },
   incidents: [incidentSchema],
   columns: { type: Object },
 });
