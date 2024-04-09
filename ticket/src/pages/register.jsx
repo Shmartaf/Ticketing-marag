@@ -108,10 +108,10 @@ export default function Register() {
             type={viewPassword ? "text" : "password"}
             placeholder="••••••••"
             value={password}
-            className="border-[1.5px] mt-1.5 border-gray-300 text-[17px] px-3.5 py-2 rounded-xl shadow-sm w-full"
+            className="border-[1.5px] mt-1.5 mb-3 border-gray-300 text-[17px] px-3.5 py-2 rounded-xl shadow-sm w-full"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <label htmlFor="userType" className="text-gray-500">
+          <label htmlFor="userType" className="text-gray-500 mt-4">
             User Type <span className="text-red-500">*</span>
           </label>
           <select
