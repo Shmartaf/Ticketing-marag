@@ -61,7 +61,7 @@ export default function DynamicBoard({
   };
 
   const handleColumnChange = (index, columnType, newName) => {
-    board.columns;
+    const updatedColumns = board.columns;
 
     board.columns[index] = {
       ...board.columns[index],
