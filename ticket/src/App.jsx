@@ -23,21 +23,21 @@ function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<DashboardIndex />} />
-          <Route path="board/:id" element={<BoardPage />} />
-          <Route path="settings" element={<SettingsPage />} />
-          <Route path="notifications" element={<NotificationsPage />} />
-        </Route>
+    // <BrowserRouter>
+    <Routes>
+      <Route path="/dashboard" element={<DashboardLayout />}>
+        <Route index element={<DashboardIndex />} />
+        <Route path="board/:id" element={<BoardPage />} />
+        <Route path="settings" element={<SettingsPage />} />
+        <Route path="notifications" element={<NotificationsPage />} />
+      </Route>
 
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="*" element={<h1>Not Found</h1>} />
-        <Route path="login" element={<Login />} />
-      </Routes>
-    </BrowserRouter>
+      <Route path="/" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="*" element={<h1>Not Found</h1>} />
+      <Route path="login" element={<Login />} />
+    </Routes>
+    // </BrowserRouter>
   );
 }
 
